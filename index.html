@@ -6,6 +6,7 @@
 <title>FRDoxBin</title>
 <link rel="icon" href="data:,">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -15,8 +16,6 @@
   --accent: #ff2222; --blue: #2A9FD6; --green: #00ff41;
   --gold: #ffd700; --purple: #9b59b6;
 }
-@keyframes u-float { 0%,100%{opacity:.7} 50%{opacity:1} }
-.uanim-stars,.uanim-fire,.uanim-snow,.uanim-matrix,.uanim-gold,.uanim-purple { position:relative; display:inline-block; }
 html, body { height: 100%; }
 body { font-family: 'Rajdhani', sans-serif; font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -55,7 +54,6 @@ nav {
 .pagination button.active { background: var(--bg3); color: var(--accent); border-color: var(--accent); }
 .showing { color: var(--text3); font-size: 12px; text-align: center; margin: 6px 0; font-family: 'Share Tech Mono', monospace; }
 .section { margin: 10px 0; }
-.section h2 { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead th { background: var(--bg3); padding: 7px 9px; text-align: left; font-weight: 700; color: var(--text2); border-bottom: 1px solid var(--border2); font-size: 11px; letter-spacing: .5px; text-transform: uppercase; }
 thead th:not(:first-child) { text-align: center; }
@@ -91,28 +89,6 @@ select option { background: var(--bg3); }
 .modal-close { float: right; cursor: pointer; color: var(--text2); font-size: 22px; line-height: 1; }
 .modal-close:hover { color: #fff; }
 .modal-footer { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
-.paste-view { background: var(--bg2); border: 1px solid var(--border); }
-.paste-meta { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 20px; }
-.meta-item { font-size: 12px; color: var(--text3); }
-.meta-item span { color: var(--text2); }
-.paste-content { padding: 14px; font-family: 'Share Tech Mono', monospace; font-size: 13px; line-height: 1.7; color: #bbb; white-space: pre-wrap; word-break: break-all; }
-.paste-actions { padding: 8px 14px; border-top: 1px solid var(--border); display: flex; gap: 6px; align-items: center; }
-.admin-layout { display: flex; min-height: calc(100vh - 42px); }
-.admin-sidebar { width: 200px; background: var(--bg2); border-right: 1px solid var(--border); padding: 16px 0; flex-shrink: 0; }
-.admin-sidebar .sidebar-title { color: var(--text3); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0 16px 10px; }
-.admin-sidebar a { display: block; padding: 8px 16px; color: var(--text2); font-size: 13px; cursor: pointer; transition: all .15s; font-weight: 500; }
-.admin-sidebar a:hover { color: #fff; background: var(--bg3); }
-.admin-sidebar a.active { color: #fff; background: var(--bg3); border-left: 2px solid var(--accent); }
-.admin-content { flex: 1; padding: 20px 24px; overflow-y: auto; }
-.admin-content h2 { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
-.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
-.stat-card { background: var(--bg2); border: 1px solid var(--border); padding: 14px 16px; }
-.stat-card .stat-label { color: var(--text2); font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
-.stat-card .stat-value { font-size: 26px; font-weight: 700; color: #fff; font-family: 'Share Tech Mono', monospace; }
-.tag { font-size: 11px; padding: 1px 6px; }
-.tag-admin { background: #2a0000; color: #ff5555; }
-.tag-user { background: #1a1a1a; color: #777; }
-.tag-banned { background: #2a1000; color: #ff8844; }
 .error-msg { color: #ff5555; font-size: 12px; margin-top: 8px; font-family: 'Share Tech Mono', monospace; }
 .success-msg { color: #55ff55; font-size: 12px; margin-top: 8px; font-family: 'Share Tech Mono', monospace; }
 .auth-page { min-height: calc(100vh - 42px); display: flex; align-items: center; justify-content: center; }
@@ -128,44 +104,23 @@ input[type=color] { padding: 0; height: 32px; width: 100%; cursor: pointer; }
 .profile-page { position: relative; overflow: hidden; min-height: calc(100vh - 42px); }
 #profile-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 .profile-inner { position: relative; z-index: 1; }
-.profile-header { background: rgba(14,14,14,.95); border-bottom: 1px solid var(--border); padding: 24px 0; margin-bottom: 20px; }
-.profile-header-inner { width: 82%; max-width: 1120px; margin: 0 auto; display: flex; align-items: flex-start; gap: 24px; }
-.profile-avatar { width: 80px; height: 80px; border: 2px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; background: var(--bg3); overflow: hidden; flex-shrink: 0; }
-.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile-info { flex: 1; }
-.profile-username { font-size: 22px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.profile-rank { display: inline-flex; align-items: center; padding: 2px 8px; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-.rank-vip { background: #1a1030; color: #cc66ff; border: 1px solid #440060; }
-.rank-criminal { background: #0a001a; color: #9944cc; border: 1px solid #220044; }
-.rank-rich { background: #1a1400; color: var(--gold); border: 1px solid #5a4400; }
-.rank-admin { background: #2a0000; color: #ff5555; border: 1px solid #550000; }
-.rank-mod { background: #002a00; color: #55ff55; border: 1px solid #005500; }
-.rank-user { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); }
-.profile-bio { color: var(--text2); margin: 8px 0; font-size: 14px; max-width: 500px; }
-.profile-socials { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .social-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 3px 8px; border: 1px solid var(--border2); color: var(--text2); transition: all .15s; font-family: 'Share Tech Mono', monospace; }
 .social-link:hover { color: #fff; border-color: #555; background: var(--bg3); }
-.avatar-upload-wrap { position: relative; display: inline-block; }
-.avatar-preview { width: 72px; height: 72px; border: 2px solid var(--border2); background: var(--bg3); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 11px; color: var(--text3); cursor: pointer; }
-.avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
-.avatar-preview-hint { font-size: 10px; color: var(--text3); margin-top: 4px; text-align: center; font-family: 'Share Tech Mono', monospace; }
-input[type=file] { display: none; }
-.profile-stats { display: flex; gap: 24px; margin-top: 10px; }
-.profile-stat { text-align: center; }
-.profile-stat-val { font-size: 18px; font-weight: 700; color: #fff; font-family: 'Share Tech Mono', monospace; }
-.profile-stat-label { color: var(--text3); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-.profile-meta { margin-top: 10px; display: flex; gap: 20px; flex-wrap: wrap; }
-.profile-meta-item { font-size: 12px; color: var(--text3); font-family: 'Share Tech Mono', monospace; }
-.profile-meta-item span { color: var(--text2); }
-.profile-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-.profile-tab { padding: 9px 18px; cursor: pointer; color: var(--text2); font-size: 13px; font-weight: 700; border-bottom: 2px solid transparent; margin-bottom: -1px; letter-spacing: .5px; }
-.profile-tab.active { color: #fff; border-bottom-color: var(--accent); }
-.comment { background: var(--bg2); border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 8px; }
-.comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
-.comment-time { color: var(--text3); font-size: 11px; font-family: 'Share Tech Mono', monospace; }
-.comment-text { color: var(--text); font-size: 13px; line-height: 1.6; }
-.comment-del { color: var(--accent); font-size: 11px; cursor: pointer; font-family: 'Share Tech Mono', monospace; margin-left: auto; }
-.comment-del:hover { text-decoration: underline; }
+.like-btn { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 10px; border: 1px solid var(--border2); background: var(--bg3); font-size: 12px; font-family: 'Share Tech Mono', monospace; transition: all .15s; }
+.like-btn:hover { border-color: #ff4444; color: #ff4444; }
+.like-btn.liked { border-color: #ff4444; color: #ff4444; background: #1a0000; }
+.admin-layout { display: flex; min-height: calc(100vh - 42px); }
+.admin-sidebar { width: 200px; background: var(--bg2); border-right: 1px solid var(--border); padding: 16px 0; flex-shrink: 0; }
+.admin-sidebar .sidebar-title { color: var(--text3); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0 16px 10px; }
+.admin-sidebar a { display: block; padding: 8px 16px; color: var(--text2); font-size: 13px; cursor: pointer; transition: all .15s; font-weight: 500; }
+.admin-sidebar a:hover { color: #fff; background: var(--bg3); }
+.admin-sidebar a.active { color: #fff; background: var(--bg3); border-left: 2px solid var(--accent); }
+.admin-content { flex: 1; padding: 20px 24px; overflow-y: auto; }
+.admin-content h2 { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); padding: 14px 16px; }
+.stat-card .stat-label { color: var(--text2); font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+.stat-card .stat-value { font-size: 26px; font-weight: 700; color: #fff; font-family: 'Share Tech Mono', monospace; }
 .shop-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 20px; }
 .shop-card { background: var(--bg2); border: 1px solid var(--border2); padding: 20px; display: flex; flex-direction: column; }
 .shop-card-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
@@ -175,53 +130,40 @@ input[type=file] { display: none; }
 .feat-val { color: var(--text2); }
 .feat-yes { color: var(--green); }
 .feat-no { color: var(--accent); }
-.shop-colors { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
-.shop-color-dot { width: 18px; height: 18px; }
-.like-btn { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 10px; border: 1px solid var(--border2); background: var(--bg3); font-size: 12px; font-family: 'Share Tech Mono', monospace; transition: all .15s; }
-.like-btn:hover { border-color: #ff4444; color: #ff4444; }
-.like-btn.liked { border-color: #ff4444; color: #ff4444; background: #1a0000; }
-.users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; }
-.user-card { background: var(--bg2); border: 1px solid var(--border); padding: 14px; cursor: pointer; transition: border-color .15s; }
-.user-card:hover { border-color: #444; }
-.user-card-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-.user-card-info { color: var(--text3); font-size: 12px; font-family: 'Share Tech Mono', monospace; }
+.avatar-preview { width: 72px; height: 72px; border: 2px solid var(--border2); background: var(--bg3); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 11px; color: var(--text3); cursor: pointer; }
+.avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+input[type=file] { display: none; }
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+// ─── SUPABASE CONFIG ──────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://vmwsnmhternjfkbitwie.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FM5kxxdKsfp-dGGNelp6Zg_VXBoZ6-P';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // ─── i18n ─────────────────────────────────────────────────────────────────────
 const LANG = {
   en: {
     home:'Home', addpaste:'Add Paste', users:'Users', upgrades:'Upgrades', contact:'Contact', admin:'Admin',
     login:'Login', register:'Register', logout:'Logout', settings:'Settings',
-    search_label:'Search for a paste', search_ph:'Search...', showing:'Showing',of:'of',pastes:'pastes',
+    search_label:'Search for a paste', search_ph:'Search...', showing:'Showing', of:'of', pastes:'pastes',
     pinned:'Pinned', title:'Title', views:'Views', author:'Author', added:'Added',
     no_pastes:'No pastes found', new_paste:'New Paste', content:'Content', visibility:'Visibility',
     public:'Public', unlisted:'Unlisted', private:'Private', submit:'Submit Paste', cancel:'Cancel',
-    login_req:'Login Required', must_login:'You must be logged in to paste.',
     paste_info:'Paste Info', posted:'Posted', likes:'Likes',
     comments:'Comments', no_comments:'No comments yet.', post_comment:'Post Comment', write_comment:'Write a comment...',
-    login_to_comment:'to comment', bar_color:'Bar Color', apply:'Apply', add_paste:'+ Add Paste', login_to_paste:'Login to paste',
     copy:'Copy', back:'Back', delete:'Delete',
-    profile_settings:'Profile Settings', bio:'Bio', avatar_lbl:'Profile Picture', social_discord:'Discord', social_twitter:'Twitter / X', social_instagram:'Instagram', social_github:'GitHub', social_website:'Website',
+    profile_settings:'Profile Settings', bio:'Bio', avatar_lbl:'Profile Picture',
     premium_only:'(Premium only)', username_color:'Username Color', premium_lbl:'(Premium)',
     save:'Save Changes', get_premium:'Get Premium',
-    upgrades_title:'Upgrades', upgrades_sub:'Purchases processed via PayPal. After payment, contact admin with proof.',
-    purchase:'Purchase', how_to:'How to purchase:', open_paypal:'Open PayPal',
-    admin_panel:'Admin Panel', dashboard:'Dashboard', export_db:'Export DB',
-    users_title:'Users', search_users:'Search users...', search_pastes:'Search pastes...',
-    joined:'Joined', comments_lbl:'Comments', no_users:'No users', no_pastes_admin:'No pastes',
-    edit:'Edit', rank:'Rank', del:'Del', pin:'Pin', unpin:'Unpin',
-    transactions:'Transactions', tx_sub:'All manual rank grants logged here.', no_tx:'No transactions yet',
-    site_name:'Site Name', paypal_email:'PayPal Email', online_base:'Online Count Base',
-    save_settings:'Save Settings', banned:'Banned', role:'Role', badge:'Badge (e.g. [VIP])',
-    particle:'Particle Effect', none_p:'None',
-    grant_rank:'Grant Rank', product_note:'Product / Note', grant_btn:'Grant Rank',
-    follow:'Follow', unfollow:'Unfollow', edit_profile:'Edit Profile',
+    upgrades_title:'Upgrades', upgrades_sub:'Purchases processed via PayPal.',
+    purchase:'Purchase', follow:'Follow', unfollow:'Unfollow', edit_profile:'Edit Profile',
     following:'Following', followers:'Followers',
-    admin_lbl:'Admin', manager_lbl:'Manager', mod_lbl:'Mod', council_lbl:'Council', vip_lbl:'VIP', criminal_lbl:'Criminal', rich_lbl:'Rich', user_lbl:'User',
-    showing_users:'Showing', of_users:'(of', total_users:'users)',
+    joined:'Joined', comments_lbl:'Comments',
+    admin_lbl:'Admin', manager_lbl:'Manager', mod_lbl:'Mod', council_lbl:'Council',
+    vip_lbl:'VIP', criminal_lbl:'Criminal', rich_lbl:'Rich', user_lbl:'User',
   },
   fr: {
     home:'Accueil', addpaste:'Ajouter', users:'Utilisateurs', upgrades:'Boutique', contact:'Contact', admin:'Admin',
@@ -230,551 +172,362 @@ const LANG = {
     pinned:'Épinglés', title:'Titre', views:'Vues', author:'Auteur', added:'Date',
     no_pastes:'Aucun paste trouvé', new_paste:'Nouveau Paste', content:'Contenu', visibility:'Visibilité',
     public:'Public', unlisted:'Non listé', private:'Privé', submit:'Publier', cancel:'Annuler',
-    login_req:'Connexion requise', must_login:'Vous devez être connecté pour poster.',
     paste_info:'Infos du Paste', posted:'Publié', likes:'Likes',
     comments:'Commentaires', no_comments:'Aucun commentaire.', post_comment:'Commenter', write_comment:'Écrire un commentaire...',
-    login_to_comment:'pour commenter', bar_color:'Couleur barre', apply:'Appliquer', add_paste:'+ Ajouter', login_to_paste:'Se connecter',
     copy:'Copier', back:'Retour', delete:'Supprimer',
-    profile_settings:'Paramètres du profil', bio:'Bio', avatar_lbl:'Photo de profil', social_discord:'Discord', social_twitter:'Twitter / X', social_instagram:'Instagram', social_github:'GitHub', social_website:'Site web',
+    profile_settings:'Paramètres du profil', bio:'Bio', avatar_lbl:'Photo de profil',
     premium_only:'(Premium uniquement)', username_color:"Couleur d'username", premium_lbl:'(Premium)',
     save:'Enregistrer', get_premium:'Obtenir Premium',
-    upgrades_title:'Boutique', upgrades_sub:'Achats via PayPal. Après paiement, contactez un admin.',
-    purchase:'Acheter', how_to:'Comment acheter :', open_paypal:'Ouvrir PayPal',
-    admin_panel:'Panel Admin', dashboard:'Tableau de bord', export_db:'Exporter DB',
-    users_title:'Utilisateurs', search_users:'Chercher un utilisateur...', search_pastes:'Chercher un paste...',
-    joined:'Inscrit', comments_lbl:'Commentaires', no_users:'Aucun utilisateur', no_pastes_admin:'Aucun paste',
-    edit:'Éditer', rank:'Rang', del:'Suppr', pin:'Épingler', unpin:'Désépingler',
-    transactions:'Transactions', tx_sub:'Tous les rangs accordés manuellement.', no_tx:'Aucune transaction',
-    site_name:'Nom du site', paypal_email:'Email PayPal', online_base:'Base compteur en ligne',
-    save_settings:'Sauvegarder', banned:'Banni', role:'Rôle', badge:'Badge (ex: [VIP])',
-    particle:'Effet particules', none_p:'Aucun',
-    grant_rank:'Accorder un rang', product_note:'Produit / Note', grant_btn:'Accorder',
-    follow:'Suivre', unfollow:'Ne plus suivre', edit_profile:'Modifier le profil',
+    upgrades_title:'Boutique', upgrades_sub:'Achats via PayPal.',
+    purchase:'Acheter', follow:'Suivre', unfollow:'Ne plus suivre', edit_profile:'Modifier le profil',
     following:'Abonnements', followers:'Abonnés',
-    admin_lbl:'Admin', manager_lbl:'Manager', mod_lbl:'Modérateur', council_lbl:'Conseil', vip_lbl:'VIP', criminal_lbl:'Criminal', rich_lbl:'Rich', user_lbl:'Utilisateur',
-    showing_users:'Affichage', of_users:'(sur', total_users:'utilisateurs)',
+    joined:'Inscrit', comments_lbl:'Commentaires',
+    admin_lbl:'Admin', manager_lbl:'Manager', mod_lbl:'Modérateur', council_lbl:'Conseil',
+    vip_lbl:'VIP', criminal_lbl:'Criminal', rich_lbl:'Rich', user_lbl:'Utilisateur',
   }
 };
-let CL = localStorage.getItem('doxbin_lang')||'en';
-function t(k){ return LANG[CL]?.[k]||LANG.en[k]||k; }
-function setLang(l){ CL=l; localStorage.setItem('doxbin_lang',l); render(); }
+let CL = localStorage.getItem('doxbin_lang') || 'en';
+function t(k) { return LANG[CL]?.[k] || LANG.en[k] || k; }
+function setLang(l) { CL = l; localStorage.setItem('doxbin_lang', l); render(); }
 
-// ─── POCKETBASE CONFIG ────────────────────────────────────────────────────────
-const PB_URL = 'https://vmwsnmhternjfkbitwie.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_FM5kxxdKsfp-dGGNelp6Zg_VXBoZ6-P';
-// ─── SESSION ──────────────────────────────────────────────────────────────────
-const SK = 'doxbin_session';
-function getSession() { try { const r=localStorage.getItem(SK); return r?JSON.parse(r):null; } catch(e){return null;} }
-function setSession(u) { u?localStorage.setItem(SK,JSON.stringify(u)):localStorage.removeItem(SK); }
-function getToken() { try { const r=localStorage.getItem('doxbin_token'); return r||null; } catch(e){return null;} }
-function setToken(tk) { tk?localStorage.setItem('doxbin_token',tk):localStorage.removeItem('doxbin_token'); }
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const S = {
+  user: null, profile: null,
+  page: 'home',
+  pastes: [], total: 0, pages: 1, currentPage: 1, search: '',
+  viewPaste: null, viewUser: null,
+  adminTab: 'dashboard', adminUsers: [], adminPastes: [], adminStats: {},
+  modal: null, shopModal: null,
+  allUsers: [], userSearch: ''
+};
 
-// ─── HTTP HELPERS ─────────────────────────────────────────────────────────────
-async function pbFetch(url, options={}, retries=2) {
-  const controller = new AbortController();
-  const tid = setTimeout(()=>controller.abort(), 10000);
-  try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    clearTimeout(tid);
-    if(res.status === 204) return { ok:true, data:{} };
-    const data = await res.json().catch(()=>({}));
-    return { ok: res.ok, status: res.status, data };
-  } catch(e) {
-    clearTimeout(tid);
-    if(retries > 0 && e.name !== 'AbortError') {
-      await new Promise(r=>setTimeout(r, 600));
-      return pbFetch(url, options, retries-1);
-    }
-    const msg = e.name === 'AbortError' ? 'Timeout réseau' : 'Erreur réseau';
-    throw new Error(msg);
-  }
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg, ok = true) {
+  const el = document.createElement('div'); el.className = 'toast';
+  el.style.borderColor = ok ? '#1a5a1a' : '#5a1a1a'; el.style.color = ok ? '#55ff55' : '#ff5555';
+  el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
 }
+function timeAgo(d) {
+  const diff = (Date.now() - new Date(d).getTime()) / 1000;
+  if (diff < 60) return 'just now'; if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function navigate(page, extra = {}) { Object.assign(S, extra, { page }); render(); }
+function rankLabel(r) { return { admin:'[Admin]', manager:'[Manager]', mod:'[Mod]', council:'[Council]', vip:'[VIP]', criminal:'[Criminal]', rich:'[Rich]', user:'' }[r] || ''; }
+function rankColor(r) { return { admin:'#ff2222', manager:'#ff6644', mod:'#00ff41', council:'#4488ff', vip:'#cc66ff', criminal:'#9944cc', rich:'#ffd700', user:'#777' }[r] || '#777'; }
+function rankAnim(r) { return { admin:'fire', mod:'matrix', manager:'fire', council:'stars', rich:'stars', criminal:'stars', vip:'stars' }[r] || ''; }
 
-async function pbGet(path, params={}) {
-  const clean = {};
-  for(const [k,v] of Object.entries(params)) if(v!==''&&v!==null&&v!==undefined) clean[k]=v;
-  const q = new URLSearchParams(clean).toString();
-  const url = PB_URL + path + (q ? '?'+q : '');
-  const headers = {};
-  const tok = getToken();
-  if(tok) headers['Authorization'] = tok;
-  const r = await pbFetch(url, { headers });
-  return r.data;
-}
-async function pbPost(path, body) {
-  const tok = getToken();
-  const headers = { 'Content-Type':'application/json' };
-  if(tok) headers['Authorization'] = tok;
-  return pbFetch(PB_URL + path, { method:'POST', headers, body:JSON.stringify(body) });
-}
-async function pbPatch(path, body) {
-  const tok = getToken();
-  const headers = { 'Content-Type':'application/json' };
-  if(tok) headers['Authorization'] = tok;
-  return pbFetch(PB_URL + path, { method:'PATCH', headers, body:JSON.stringify(body) });
-}
-async function pbDelete(path) {
-  const tok = getToken();
-  const headers = {};
-  if(tok) headers['Authorization'] = tok;
-  const r = await pbFetch(PB_URL + path, { method:'DELETE', headers });
-  return r.ok;
-}
-
-// ─── LOADING OVERLAY ──────────────────────────────────────────────────────────
 let _loadCount = 0;
 function showLoading() {
   _loadCount++;
   let el = document.getElementById('pb-loading');
-  if(!el){
-    el=document.createElement('div'); el.id='pb-loading';
-    el.style.cssText='position:fixed;bottom:60px;right:20px;background:rgba(0,0,0,.7);border:1px solid #2a2a2a;padding:6px 14px;z-index:9998;font-family:monospace;color:#00ff41;font-size:12px;pointer-events:none;';
-    el.textContent='● chargement...';
-    document.body.appendChild(el);
-  }
+  if (!el) { el = document.createElement('div'); el.id = 'pb-loading'; el.style.cssText = 'position:fixed;bottom:60px;right:20px;background:rgba(0,0,0,.7);border:1px solid #2a2a2a;padding:6px 14px;z-index:9998;font-family:monospace;color:#00ff41;font-size:12px;pointer-events:none;'; el.textContent = '● loading...'; document.body.appendChild(el); }
 }
-function hideLoading() {
-  _loadCount = Math.max(0, _loadCount-1);
-  if(_loadCount === 0) { const el=document.getElementById('pb-loading'); if(el)el.remove(); }
-}
-
-// ─── ASYNC WRAPPER ────────────────────────────────────────────────────────────
+function hideLoading() { _loadCount = Math.max(0, _loadCount - 1); if (_loadCount === 0) { const el = document.getElementById('pb-loading'); if (el) el.remove(); } }
 function run(fn) {
   showLoading();
-  Promise.resolve().then(fn).catch(e=>{
-    console.error(e);
-    const msg = e?.message||'';
-    toast(msg.includes('réseau')||msg.includes('network')||msg.includes('fetch')||msg.includes('Timeout')
-      ? '⚠ Erreur réseau — vérifiez que PocketBase tourne' : 'Erreur: '+msg, false);
-  }).finally(()=>{ hideLoading(); });
+  Promise.resolve().then(fn).catch(e => { console.error(e); toast('Erreur: ' + (e?.message || 'inconnue'), false); }).finally(() => hideLoading());
 }
 
-// ─── API ──────────────────────────────────────────────────────────────────────
+// ─── API SUPABASE ─────────────────────────────────────────────────────────────
 const OWNER_EMAIL = 'vearathenicofrance@gmail.com';
+const PAGE_SIZE = 20;
 
-async function apiLogin(identity, password) {
-  const r = await pbPost('/api/collections/users/auth-with-password', { identity, password });
-  if(!r.ok) return { success:false, error: r.data?.message||'Email ou mot de passe incorrect' };
-  const u = r.data.record;
-  if(u.banned) { setToken(null); return { success:false, error:'Compte banni' }; }
-  setToken(r.data.token);
-  const isOwner = u.email === OWNER_EMAIL;
-  if(isOwner && u.role !== 'admin') {
-    await pbPatch('/api/collections/users/records/'+u.id, { role:'admin', rank:'admin', badge:'[Admin]', color:'#ff2222', premium:true });
-    u.role='admin'; u.rank='admin'; u.badge='[Admin]'; u.color='#ff2222'; u.premium=true;
+async function apiLogin(email, password) {
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) return { success: false, error: error.message };
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+  if (profile?.banned) { await sb.auth.signOut(); return { success: false, error: 'Compte banni' }; }
+  S.user = data.user; S.profile = profile;
+  if (data.user.email === OWNER_EMAIL && profile?.role !== 'admin') {
+    await sb.from('profiles').update({ role: 'admin', rank: 'admin', badge: '[Admin]', color: '#ff2222', premium: true }).eq('id', data.user.id);
+    S.profile = { ...profile, role: 'admin', rank: 'admin', badge: '[Admin]', color: '#ff2222', premium: true };
   }
-  const s = { id:u.id, username:u.username, email:u.email, role:u.role||'user', rank:u.rank||'user', premium:u.premium||false, color:u.color||'#2A9FD6' };
-  setSession(s);
-  S_fullUser = u;
-  return { success:true, user:s };
+  return { success: true };
 }
 
 async function apiRegister(username, email, password) {
-  if(!username||!email||!password||username.length<3||password.length<6) return { success:false, error:'Username min 3 chars, mot de passe min 6 chars' };
-  if(!/^[a-zA-Z0-9_]+$/.test(username)) return { success:false, error:'Username: lettres, chiffres, _ seulement' };
-  const r = await pbPost('/api/collections/users/records', {
-    username, email, password, passwordConfirm: password,
-    role:'user', rank:'user', color:'#2A9FD6', badge:'', row_color:'', particle:'none',
-    bio:'', discord:'', twitter:'', instagram:'', github:'', website:'',
-    avatar_url:'', premium:false, banned:false
-  });
-  if(!r.ok) return { success:false, error: r.data.message||'Erreur lors de la création du compte' };
-  return apiLogin(email, password);
+  if (!username || username.length < 3) return { success: false, error: 'Username min 3 caractères' };
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) return { success: false, error: 'Username: lettres, chiffres, _ seulement' };
+  if (!password || password.length < 6) return { success: false, error: 'Mot de passe min 6 caractères' };
+  const { data: existing } = await sb.from('profiles').select('id').eq('username', username).single();
+  if (existing) return { success: false, error: 'Username déjà pris' };
+  const { data, error } = await sb.auth.signUp({ email, password, options: { data: { username } } });
+  if (error) return { success: false, error: error.message };
+  S.user = data.user;
+  await new Promise(r => setTimeout(r, 800));
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+  S.profile = profile;
+  return { success: true };
 }
 
-async function apiGetPastes(page=1, search='') {
-  const limit = 20;
-  let filter = "visibility='public'";
-  if(search) filter += ` && title~'${search.replace(/'/g,"''")}'`;
-  try {
-    const data = await pbGet('/api/collections/pastes/records', {
-      filter, sort:'-pinned,-created', page, perPage:limit, expand:'author'
-    });
-    if(!data.items) return { pastes:[], total:0, pages:1 };
-    const pastes = data.items.map(p => {
-      const au = p.expand?.author;
-      return {
-        id:p.id, link:p.link||p.id, title:p.title||'Untitled', content:p.content||'',
-        views:p.views||0, pinned:p.pinned||false, visibility:p.visibility||'public',
-        created_at:p.created, author_id:p.author,
-        username:au?.username||null, color:au?.color||'#2A9FD6',
-        badge:au?.badge||'', row_color:au?.row_color||'',
-        rank:au?.rank||'user', particle:au?.particle||'none',
-        comment_count:0, liked_by:[]
-      };
-    });
-    return { pastes, total:data.totalItems||0, pages:data.totalPages||1 };
-  } catch(e) {
-    console.warn('apiGetPastes error:', e.message);
-    return { pastes:[], total:0, pages:1 };
-  }
+async function apiLogout() {
+  await sb.auth.signOut();
+  S.user = null; S.profile = null;
+}
+
+async function apiGetPastes(page = 1, search = '') {
+  let q = sb.from('pastes').select('*, profiles!pastes_author_fkey(username, color, badge, rank, particle)', { count: 'exact' })
+    .eq('visibility', 'public').order('pinned', { ascending: false }).order('created_at', { ascending: false })
+    .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+  if (search) q = q.ilike('title', `%${search}%`);
+  const { data, count, error } = await q;
+  if (error) { console.warn(error); return { pastes: [], total: 0, pages: 1 }; }
+  const pastes = (data || []).map(p => ({
+    id: p.id, link: p.link, title: p.title, content: p.content,
+    views: p.views || 0, pinned: p.pinned || false, visibility: p.visibility,
+    created_at: p.created_at, author_id: p.author,
+    username: p.profiles?.username || null, color: p.profiles?.color || '#2A9FD6',
+    badge: p.profiles?.badge || '', rank: p.profiles?.rank || 'user',
+    particle: p.profiles?.particle || 'none', comment_count: 0, liked_by: []
+  }));
+  const total = count || 0;
+  return { pastes, total, pages: Math.ceil(total / PAGE_SIZE) || 1 };
 }
 
 async function apiGetPaste(link) {
-  try {
-    const data = await pbGet('/api/collections/pastes/records', {
-      filter:`link='${link}'`, expand:'author', perPage:1
-    });
-    if(!data.items||!data.items.length) return null;
-    const p = data.items[0];
-    const au = p.expand?.author;
-    pbPatch('/api/collections/pastes/records/'+p.id, { views: (p.views||0)+1 }).catch(()=>{});
-    const cdata = await pbGet('/api/collections/comments/records', {
-      filter:`paste='${p.id}'`, sort:'created', expand:'author', perPage:200
-    });
-    const comments = (cdata.items||[]).map(c => {
-      const cu = c.expand?.author;
-      return { id:c.id, paste_id:p.id, content:c.content, created_at:c.created,
-        username:cu?.username||'Anonymous', color:cu?.color||'#777',
-        badge:cu?.badge||'', rank:cu?.rank||'user', author_id:c.author };
-    });
-    const ldata = await pbGet('/api/collections/likes/records', {
-      filter:`paste='${p.id}'`, perPage:500
-    });
-    const liked_by = (ldata.items||[]).map(l=>l.user);
-    return {
-      id:p.id, link:p.link||link, title:p.title||'Untitled', content:p.content||'',
-      views:(p.views||0)+1, pinned:p.pinned||false, visibility:p.visibility||'public',
-      created_at:p.created, author_id:p.author,
-      username:au?.username||null, color:au?.color||'#2A9FD6',
-      badge:au?.badge||'', rank:au?.rank||'user', premium:au?.premium||false,
-      bar_color:au?.bar_color||'', particle:au?.particle||'none',
-      // FIX 1: avatar_url was missing from return — author avatar never showed in sidebar
-      avatar_url:au?.avatar_url||'',
-      comments, liked_by
-    };
-  } catch(e) {
-    console.warn('apiGetPaste error:', e.message);
-    return null;
-  }
-}
-
-async function apiGetUser(username) {
-  const data = await pbGet('/api/collections/users/records', {
-    filter:`username='${username}'`, perPage:1
-  });
-  if(!data.items||!data.items.length) return null;
-  const u = data.items[0];
-  const pdata = await pbGet('/api/collections/pastes/records', {
-    filter:`author='${u.id}' && visibility!='private'`, sort:'-created', perPage:200
-  });
-  const pastes = (pdata.items||[]).map(p=>({
-    ...p, id:p.id, link:p.link, title:p.title, content:p.content,
-    views:p.views||0, created_at:p.created, comment_count:0
-  }));
-  const fdata = await pbGet('/api/collections/users/records', {
-    filter:`following~'${u.id}'`, perPage:1
-  });
-  const followers = fdata.totalItems||0;
-  let likes_received = 0;
-  if(pastes.length) {
-    const pasteIds = pastes.map(p=>`paste='${p.id}'`).join('||');
-    const ldata = await pbGet('/api/collections/likes/records', {
-      filter: pasteIds, perPage:1
-    });
-    likes_received = ldata.totalItems||0;
-  }
-  const profile_comments = apiGetProfileComments(u.id);
+  const { data: p, error } = await sb.from('pastes')
+    .select('*, profiles!pastes_author_fkey(username, color, badge, rank, premium, bar_color, particle, avatar_url)')
+    .eq('link', link).single();
+  if (error || !p) return null;
+  await sb.from('pastes').update({ views: (p.views || 0) + 1 }).eq('id', p.id);
+  const { data: comments } = await sb.from('comments')
+    .select('*, profiles!comments_author_fkey(username, color, badge, rank)').eq('paste', p.id).order('created_at');
+  const { data: likes } = await sb.from('likes').select('user').eq('paste', p.id);
+  const au = p.profiles;
   return {
-    ...u, id:u.id, username:u.username, role:u.role||'user', rank:u.rank||'user',
-    color:u.color||'#2A9FD6', badge:u.badge||'', bio:u.bio||'',
-    discord:u.discord||'', twitter:u.twitter||'', instagram:u.instagram||'',
-    github:u.github||'', website:u.website||'', avatar_url:u.avatar_url||'',
-    premium:u.premium||false, banned:u.banned||false, bar_color:u.bar_color||'',
-    particle:u.particle||'none', created_at:u.created,
-    pastes, followers, following:(u.following||[]).length,
-    likes_received, liked_pastes:[], profile_comments
+    id: p.id, link: p.link, title: p.title, content: p.content,
+    views: (p.views || 0) + 1, pinned: p.pinned, visibility: p.visibility,
+    created_at: p.created_at, author_id: p.author,
+    username: au?.username || null, color: au?.color || '#2A9FD6',
+    badge: au?.badge || '', rank: au?.rank || 'user', premium: au?.premium || false,
+    bar_color: au?.bar_color || '', particle: au?.particle || 'none', avatar_url: au?.avatar_url || '',
+    comments: (comments || []).map(c => {
+      const cu = c.profiles;
+      return { id: c.id, paste_id: p.id, content: c.content, created_at: c.created_at,
+        username: cu?.username || 'Anonymous', color: cu?.color || '#777',
+        badge: cu?.badge || '', rank: cu?.rank || 'user', author_id: c.author };
+    }),
+    liked_by: (likes || []).map(l => l.user)
   };
 }
 
+async function apiGetUser(username) {
+  const { data: u, error } = await sb.from('profiles').select('*').eq('username', username).single();
+  if (error || !u) return null;
+  const { data: pastes } = await sb.from('pastes').select('id, title, link, views, visibility, created_at')
+    .eq('author', u.id).neq('visibility', 'private').order('created_at', { ascending: false });
+  const { count: followers } = await sb.from('profiles').select('id', { count: 'exact' }).contains('following', [u.id]);
+  const pasteIds = (pastes || []).map(p => p.id);
+  let likes_received = 0;
+  if (pasteIds.length) {
+    const { count } = await sb.from('likes').select('id', { count: 'exact' }).in('paste', pasteIds);
+    likes_received = count || 0;
+  }
+  return { ...u, pastes: pastes || [], followers: followers || 0, following: (u.following || []).length, likes_received };
+}
+
+async function apiGetAllUsers(search = '') {
+  let q = sb.from('profiles').select('id, username, rank, color, badge, premium, banned, created_at, particle').order('created_at', { ascending: false });
+  if (search) q = q.ilike('username', `%${search}%`);
+  const { data } = await q;
+  return data || [];
+}
+
 async function apiCreatePaste(title, content, visibility) {
-  if(!title||!content) return { success:false, error:'Titre et contenu requis' };
-  const s = getSession();
-  if(!s) return { success:false, error:'Connexion requise' };
-  const slug = (title.replace(/[^a-zA-Z0-9]/g,'')||'paste').substring(0,25);
-  const link = slug+'_'+Date.now().toString(36);
-  const r = await pbPost('/api/collections/pastes/records', {
-    title, content, link, visibility, author:s.id, views:0, pinned:false, tags:[]
-  });
-  if(!r.ok) return { success:false, error: r.data.message||'Erreur' };
-  return { success:true, link };
+  if (!title || !content) return { success: false, error: 'Titre et contenu requis' };
+  if (!S.user) return { success: false, error: 'Connexion requise' };
+  const slug = (title.replace(/[^a-zA-Z0-9]/g, '') || 'paste').substring(0, 25);
+  const link = slug + '_' + Date.now().toString(36);
+  const { error } = await sb.from('pastes').insert({ title, content, link, visibility, author: S.user.id, views: 0, pinned: false });
+  if (error) return { success: false, error: error.message };
+  return { success: true, link };
 }
 
 async function apiAddComment(pasteId, content) {
-  if(!content||!content.trim()) return { success:false, error:'Commentaire vide' };
-  const s = getSession();
-  if(!s) return { success:false, error:'Connexion requise' };
-  const r = await pbPost('/api/collections/comments/records', { paste:pasteId, author:s.id, content:content.trim() });
-  if(!r.ok) return { success:false, error:'Erreur' };
-  return { success:true };
+  if (!content?.trim()) return { success: false, error: 'Commentaire vide' };
+  if (!S.user) return { success: false, error: 'Connexion requise' };
+  const { error } = await sb.from('comments').insert({ paste: pasteId, author: S.user.id, content: content.trim() });
+  if (error) return { success: false, error: error.message };
+  return { success: true };
 }
 
 async function apiDeleteComment(id) {
-  return pbDelete('/api/collections/comments/records/'+id);
+  const { error } = await sb.from('comments').delete().eq('id', id);
+  return !error;
 }
 
 async function apiToggleLike(pasteId) {
-  const s = getSession();
-  if(!s) return;
-  const data = await pbGet('/api/collections/likes/records', { filter:`paste='${pasteId}' && user='${s.id}'`, perPage:1 });
-  if(data.items&&data.items.length) {
-    await pbDelete('/api/collections/likes/records/'+data.items[0].id);
-  } else {
-    await pbPost('/api/collections/likes/records', { paste:pasteId, user:s.id });
-  }
-}
-
-async function apiUpdateProfile(body) {
-  const s = getSession();
-  if(!s) return false;
-  const r = await pbPatch('/api/collections/users/records/'+s.id, body);
-  if(r.ok) {
-    const u = r.data;
-    const ns = { ...s, username:u.username, role:u.role||s.role, rank:u.rank||s.rank, premium:u.premium||false };
-    setSession(ns); S.user = ns;
-    // FIX 2: also update S_fullUser so following/settings stay in sync
-    if(S_fullUser) Object.assign(S_fullUser, u);
-  }
-  return r.ok;
+  if (!S.user) return;
+  const { data } = await sb.from('likes').select('id').eq('paste', pasteId).eq('user', S.user.id).single();
+  if (data) { await sb.from('likes').delete().eq('id', data.id); }
+  else { await sb.from('likes').insert({ paste: pasteId, user: S.user.id }); }
 }
 
 async function apiFollow(targetId) {
-  const s = getSession();
-  if(!s) return false;
-  const me = await pbGet('/api/collections/users/records/'+s.id);
-  const following = me.following||[];
-  const fi = following.indexOf(targetId);
-  if(fi===-1) following.push(targetId); else following.splice(fi,1);
-  await pbPatch('/api/collections/users/records/'+s.id, { following });
-  // FIX 3: update S_fullUser.following so amIFollowing stays accurate
-  if(S_fullUser) S_fullUser.following = following;
-  return fi===-1;
+  if (!S.user || !S.profile) return false;
+  const following = [...(S.profile.following || [])];
+  const idx = following.indexOf(targetId);
+  if (idx === -1) following.push(targetId); else following.splice(idx, 1);
+  await sb.from('profiles').update({ following }).eq('id', S.user.id);
+  S.profile.following = following;
+  return idx === -1;
+}
+
+async function apiUpdateProfile(body) {
+  if (!S.user) return false;
+  const { error } = await sb.from('profiles').update(body).eq('id', S.user.id);
+  if (!error) S.profile = { ...S.profile, ...body };
+  return !error;
 }
 
 async function apiAdminStats() {
-  try {
-    const [users,pastes,comments,banned] = await Promise.all([
-      pbGet('/api/collections/users/records', { perPage:1 }),
-      pbGet('/api/collections/pastes/records', { perPage:1 }),
-      pbGet('/api/collections/comments/records', { perPage:1 }),
-      pbGet('/api/collections/users/records', { filter:"banned=true", perPage:1 }),
-    ]);
-    const pAll = await pbGet('/api/collections/pastes/records', { perPage:200, fields:'views' });
-    const views = (pAll.items||[]).reduce((s,p)=>s+(p.views||0),0);
-    return {
-      users:users.totalItems||0, pastes:pastes.totalItems||0,
-      comments:comments.totalItems||0, banned:banned.totalItems||0, views
-    };
-  } catch(e) { return { users:0, pastes:0, comments:0, banned:0, views:0 }; }
+  const [users, pastes, comments, banned] = await Promise.all([
+    sb.from('profiles').select('id', { count: 'exact' }),
+    sb.from('pastes').select('id', { count: 'exact' }),
+    sb.from('comments').select('id', { count: 'exact' }),
+    sb.from('profiles').select('id', { count: 'exact' }).eq('banned', true),
+  ]);
+  const { data: viewData } = await sb.from('pastes').select('views');
+  const views = (viewData || []).reduce((s, p) => s + (p.views || 0), 0);
+  return { users: users.count || 0, pastes: pastes.count || 0, comments: comments.count || 0, banned: banned.count || 0, views };
 }
 
-async function apiAdminUsers(search='') {
-  let filter = search ? `username~'${search}'` : '';
-  const data = await pbGet('/api/collections/users/records', { filter, sort:'-created', perPage:200 });
-  return (data.items||[]).map(u=>({ ...u, id:u.id, username:u.username, role:u.role||'user', rank:u.rank||'user', color:u.color||'#2A9FD6', badge:u.badge||'', premium:u.premium||false, banned:u.banned||false, created_at:u.created, likes_received:0 }));
+async function apiAdminUsers(search = '') {
+  let q = sb.from('profiles').select('*').order('created_at', { ascending: false });
+  if (search) q = q.ilike('username', `%${search}%`);
+  const { data } = await q;
+  return data || [];
 }
 
-async function apiGetAllUsers(search='') {
-  try {
-    let filter = search ? `username~'${search}'` : '';
-    const data = await pbGet('/api/collections/users/records', { filter, sort:'-created', perPage:500 });
-    const users = (data.items||[]).map(u=>({
-      id:u.id, username:u.username, role:u.role||'user', rank:u.rank||'user',
-      color:u.color||'#2A9FD6', badge:u.badge||'', premium:u.premium||false,
-      banned:u.banned||false, created_at:u.created, particle:u.particle||'none'
-    }));
-    S.allUsers = users;
-    return users;
-  } catch(e) { return []; }
-}
-
-async function apiAdminPastes(search='') {
-  let filter = search ? `title~'${search}'` : '';
-  const data = await pbGet('/api/collections/pastes/records', { filter, sort:'-created', perPage:200, expand:'author' });
-  return (data.items||[]).map(p=>({ ...p, id:p.id, link:p.link, title:p.title, views:p.views||0, pinned:p.pinned||false, created_at:p.created, username:p.expand?.author?.username||null }));
+async function apiAdminPastes(search = '') {
+  let q = sb.from('pastes').select('*, profiles!pastes_author_fkey(username)').order('created_at', { ascending: false });
+  if (search) q = q.ilike('title', `%${search}%`);
+  const { data } = await q;
+  return (data || []).map(p => ({ ...p, username: p.profiles?.username || null }));
 }
 
 async function apiUpdateUser(id, body) {
-  const r = await pbPatch('/api/collections/users/records/'+id, body);
-  return r.ok;
+  const { error } = await sb.from('profiles').update(body).eq('id', id);
+  return !error;
 }
 
 async function apiDeleteUser(id) {
-  await pbDelete('/api/collections/users/records/'+id);
+  await sb.from('profiles').delete().eq('id', id);
 }
 
 async function apiDeletePaste(id) {
-  await pbDelete('/api/collections/pastes/records/'+id);
+  await sb.from('pastes').delete().eq('id', id);
 }
 
 async function apiTogglePin(id) {
-  const data = await pbGet('/api/collections/pastes/records/'+id);
-  const pinned = !data.pinned;
-  await pbPatch('/api/collections/pastes/records/'+id, { pinned });
+  const { data } = await sb.from('pastes').select('pinned').eq('id', id).single();
+  const pinned = !data?.pinned;
+  await sb.from('pastes').update({ pinned }).eq('id', id);
   return pinned;
 }
 
-async function apiGrantRank(userId, rank, product) {
-  let body = { rank, premium:true };
-  if(rank==='vip'){body.badge='[VIP]';body.color='#cc66ff';}
-  else if(rank==='criminal'){body.badge='[Criminal]';body.color='#9944cc';}
-  else if(rank==='rich'){body.badge='[Rich]';body.color='#ffd700';}
-  else if(rank==='manager'){body.badge='[Manager]';body.color='#ff6644';}
-  else if(rank==='council'){body.badge='[Council]';body.color='#4488ff';}
-  else if(rank==='mod'){body.badge='[Mod]';body.color='#00ff41';}
-  else if(rank==='user'){body.badge='';body.premium=false;}
-  const r = await pbPatch('/api/collections/users/records/'+userId, body);
-  return r.ok;
+async function apiGrantRank(userId, rank) {
+  let body = { rank, premium: true };
+  if (rank === 'vip') { body.badge = '[VIP]'; body.color = '#cc66ff'; }
+  else if (rank === 'criminal') { body.badge = '[Criminal]'; body.color = '#9944cc'; }
+  else if (rank === 'rich') { body.badge = '[Rich]'; body.color = '#ffd700'; }
+  else if (rank === 'manager') { body.badge = '[Manager]'; body.color = '#ff6644'; }
+  else if (rank === 'council') { body.badge = '[Council]'; body.color = '#4488ff'; }
+  else if (rank === 'mod') { body.badge = '[Mod]'; body.color = '#00ff41'; }
+  else if (rank === 'admin') { body.badge = '[Admin]'; body.color = '#ff2222'; }
+  else { body.badge = ''; body.premium = false; }
+  const { error } = await sb.from('profiles').update(body).eq('id', userId);
+  return !error;
 }
 
-async function apiAdminSettings(body) {
-  const cur = JSON.parse(localStorage.getItem('doxbin_settings')||'{}');
-  Object.assign(cur, body);
-  localStorage.setItem('doxbin_settings', JSON.stringify(cur));
-  return true;
-}
+function getSettings() { return JSON.parse(localStorage.getItem('doxbin_settings') || '{"site_name":"FRDoxBin","paypal_email":"yourpaypal@email.com","online_count_base":340}'); }
+function apiAdminSettings(body) { const cur = getSettings(); Object.assign(cur, body); localStorage.setItem('doxbin_settings', JSON.stringify(cur)); }
 
-function apiAdminTransactions() {
-  return JSON.parse(localStorage.getItem('doxbin_transactions')||'[]');
+// Profile comments (localStorage)
+function apiGetProfileComments(uid) { return JSON.parse(localStorage.getItem('doxbin_pc_' + uid) || '[]'); }
+function apiAddProfileComment(uid, content) {
+  if (!content?.trim() || !S.user) return { success: false, error: 'Erreur' };
+  const list = apiGetProfileComments(uid);
+  list.push({ id: Date.now(), target_user: uid, author_id: S.user.id, author_username: S.profile?.username || '?', content: content.trim(), created_at: new Date().toISOString() });
+  localStorage.setItem('doxbin_pc_' + uid, JSON.stringify(list));
+  return { success: true };
 }
-
-function getSettings() {
-  return JSON.parse(localStorage.getItem('doxbin_settings')||'{"site_name":"FRDoxBin","paypal_email":"yourpaypal@email.com","online_count_base":340}');
-}
-
-// Profile comments — stored in localStorage
-function apiGetProfileComments(targetUserId) {
-  return JSON.parse(localStorage.getItem('doxbin_pc_'+targetUserId)||'[]');
-}
-function apiAddProfileComment(targetUserId, content) {
-  if(!content||!content.trim()) return { success:false, error:'Vide' };
-  if(!S.user) return { success:false, error:'Connexion requise' };
-  const list = apiGetProfileComments(targetUserId);
-  list.push({ id:Date.now(), target_user:targetUserId, author_id:S.user.id, author_username:S.user.username, content:content.trim(), created_at:new Date().toISOString() });
-  localStorage.setItem('doxbin_pc_'+targetUserId, JSON.stringify(list));
-  return { success:true };
-}
-function apiDeleteProfileComment(targetUserId, id) {
-  const list = apiGetProfileComments(targetUserId).filter(c=>c.id!==id);
-  localStorage.setItem('doxbin_pc_'+targetUserId, JSON.stringify(list));
-  return true;
-}
-
-function exportDB() {
-  toast('Export non disponible avec PocketBase — utilisez le dashboard admin.');
-}
-
-// ─── STATE ────────────────────────────────────────────────────────────────────
-const S = { user:getSession(), page:'home', pastes:[], total:0, pages:1, currentPage:1, search:'', viewPaste:null, viewUser:null, adminTab:'dashboard', adminUsers:[], adminPastes:[], adminStats:{}, modal:null, profileTab:'pastes', shopModal:null, allUsers:[], userSearch:'' };
-
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function toast(msg,ok=true){
-  const el=document.createElement('div'); el.className='toast';
-  el.style.borderColor=ok?'#1a5a1a':'#5a1a1a'; el.style.color=ok?'#55ff55':'#ff5555';
-  el.textContent=msg; document.body.appendChild(el); setTimeout(()=>el.remove(),3000);
-}
-function timeAgo(d){
-  const diff=(Date.now()-new Date(d).getTime())/1000;
-  if(diff<60)return'just now'; if(diff<3600)return Math.floor(diff/60)+'m ago';
-  if(diff<86400)return Math.floor(diff/3600)+'h ago';
-  return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-function navigate(page,extra={}){
-  Object.assign(S,extra,{page});
-  if(page==='users'&&!S.allUsers?.length){
-    run(async()=>{ S.allUsers=await apiGetAllUsers(); render(); });
-  }
-  render();
-}
-function rankLabel(r){return{admin:'[Admin]',manager:'[Manager]',mod:'[Mod]',council:'[Council]',vip:'[VIP]',criminal:'[Criminal]',rich:'[Rich]',user:''}[r]||'';}
-function rankClass(r){return'rank-'+({admin:'admin',manager:'admin',mod:'mod',council:'mod',vip:'vip',criminal:'criminal',rich:'rich',user:'user'}[r]||'user');}
-function rankColor(r){return{admin:'#ff2222',manager:'#ff6644',mod:'#00ff41',council:'#4488ff',vip:'#cc66ff',criminal:'#9944cc',rich:'#ffd700',user:'#777'}[r]||'#777';}
-function getUserColor(uid){
-  if(S.user?.id===uid) return S.user?.color||'#2A9FD6';
-  const u = S.allUsers?.find(x=>x.id===uid);
-  return u?.color||'#2A9FD6';
-}
-
-// ─── FULL USER PROFILE CACHE ──────────────────────────────────────────────────
-let S_fullUser = null;
-async function loadFullUser(){
-  if(!S.user) return;
-  try {
-    const data = await pbGet('/api/collections/users/records/'+S.user.id);
-    if(data && data.id) {
-      S_fullUser = data;
-      S.user.color = data.color||'#2A9FD6';
-      setSession(S.user);
-    }
-  } catch(e) { console.warn('loadFullUser failed:', e.message); }
+function apiDeleteProfileComment(uid, id) {
+  localStorage.setItem('doxbin_pc_' + uid, JSON.stringify(apiGetProfileComments(uid).filter(c => c.id !== id)));
 }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-function render(){
-  document.getElementById('app').innerHTML=buildApp();
+function render() {
+  document.getElementById('app').innerHTML = buildApp();
   attachEvents();
-  if(S.page==='profile'&&S.viewUser)spawnParticles(S.viewUser.particle);
+  if (S.page === 'profile' && S.viewUser) spawnParticles(S.viewUser.particle);
   else stopAllParticles();
   requestAnimationFrame(attachNameParticles);
 }
-function buildApp(){
-  return`${buildNav()}<div class="page">
-    ${S.page==='home'?buildHome():''}
-    ${S.page==='upload'?buildUpload():''}
-    ${S.page==='view'?buildView():''}
-    ${S.page==='auth'?buildAuth():''}
-    ${S.page==='admin'?buildAdmin():''}
-    ${S.page==='profile'?buildProfile():''}
-    ${S.page==='users'?buildUsers():''}
-    ${S.page==='shop'?buildShop():''}
-    ${S.page==='settings'?buildSettings():''}
-  </div>${S.modal?buildModal():''}${S.shopModal?buildShopModal():''}`;
+
+function buildApp() {
+  return `${buildNav()}<div class="page">
+    ${S.page === 'home' ? buildHome() : ''}
+    ${S.page === 'upload' ? buildUpload() : ''}
+    ${S.page === 'view' ? buildView() : ''}
+    ${S.page === 'auth' ? buildAuth() : ''}
+    ${S.page === 'admin' ? buildAdmin() : ''}
+    ${S.page === 'profile' ? buildProfile() : ''}
+    ${S.page === 'users' ? buildUsers() : ''}
+    ${S.page === 'shop' ? buildShop() : ''}
+    ${S.page === 'settings' ? buildSettings() : ''}
+  </div>${S.modal ? buildModal() : ''}${S.shopModal ? buildShopModal() : ''}`;
 }
-function buildNav(){
-  const isAdmin=S.user?.role==='admin';
-  const settings=getSettings();
-  const base=settings?.online_count_base||340;
-  const cnt=base+Math.floor(Math.sin(Date.now()/100000)*20);
-  return`<nav>
+
+function buildNav() {
+  const isAdmin = S.profile?.role === 'admin';
+  const settings = getSettings();
+  const base = settings?.online_count_base || 340;
+  const cnt = base + Math.floor(Math.sin(Date.now() / 100000) * 20);
+  const username = S.profile?.username || '';
+  const ucolor = S.profile?.color || '#2A9FD6';
+  return `<nav>
     <div class="nav-brand" onclick="navigate('home')">FRDoxBin</div>
     <div class="nav-links">
-      <a class="${S.page==='home'?'active':''}" onclick="navigate('home')">${t('home')}</a>
-      <a class="${S.page==='upload'?'active':''}" onclick="navigate('upload')">${t('addpaste')}</a>
-      <a class="${S.page==='users'?'active':''}" onclick="run(async()=>{S.allUsers=await apiGetAllUsers();navigate('users');})">${t('users')}</a>
-      <a class="${S.page==='shop'?'active':''}" onclick="navigate('shop')">${t('upgrades')}</a>
+      <a class="${S.page === 'home' ? 'active' : ''}" onclick="navigate('home')">${t('home')}</a>
+      <a class="${S.page === 'upload' ? 'active' : ''}" onclick="navigate('upload')">${t('addpaste')}</a>
+      <a class="${S.page === 'users' ? 'active' : ''}" onclick="run(async()=>{S.allUsers=await apiGetAllUsers();navigate('users');})">${t('users')}</a>
+      <a class="${S.page === 'shop' ? 'active' : ''}" onclick="navigate('shop')">${t('upgrades')}</a>
       <a href="https://discord.gg/bsACPp65BA" target="_blank">${t('contact')}</a>
-      ${isAdmin?`<a class="${S.page==='admin'?'active':''}" onclick="goAdmin()" style="color:#ff5555">${t('admin')}</a>`:''}
+      ${isAdmin ? `<a class="${S.page === 'admin' ? 'active' : ''}" onclick="goAdmin()" style="color:#ff5555">${t('admin')}</a>` : ''}
     </div>
     <div class="nav-right">
       <div class="online-dot">${cnt}</div>
-      <span style="color:var(--text3);font-size:12px;cursor:pointer;font-family:monospace;padding:3px 7px;border:1px solid var(--border2);user-select:none" onclick="setLang(CL==='en'?'fr':'en')">${CL==='en'?'FR':'EN'}</span>
+      <span style="color:var(--text3);font-size:12px;cursor:pointer;font-family:monospace;padding:3px 7px;border:1px solid var(--border2)" onclick="setLang(CL==='en'?'fr':'en')">${CL === 'en' ? 'FR' : 'EN'}</span>
       ${S.user
-        ?`<span style="color:${getUserColor(S.user.id)};font-size:13px;cursor:pointer;font-weight:700" onclick="viewUserProfile('${esc(S.user.username)}')">${esc(S.user.username)}</span><a onclick="run(async()=>{await loadFullUser();navigate('settings');})">${t('settings')}</a><a onclick="doLogout()">${t('logout')}</a>`
-        :`<a onclick="navigate('auth')">${t('login')}</a><a onclick="navigate('auth')">${t('register')}</a>`}
+        ? `<span style="color:${ucolor};font-size:13px;cursor:pointer;font-weight:700" onclick="viewUserProfile('${esc(username)}')">${esc(username)}</span><a onclick="navigate('settings')">${t('settings')}</a><a onclick="doLogout()">${t('logout')}</a>`
+        : `<a onclick="navigate('auth')">${t('login')}</a><a onclick="navigate('auth')">${t('register')}</a>`}
     </div>
   </nav>`;
 }
 
 // ── HOME ──────────────────────────────────────────────────────────────────────
-function buildHome(){
-  const pinned=S.pastes.filter(p=>p.pinned), regular=S.pastes.filter(p=>!p.pinned);
-  const row=p=>{
-    const bg=p.row_color?`style="background:${p.row_color}"`:''
-    const nc=p.color||rankColor(p.rank);
-    const anim=p.particle&&p.particle!=='none'?uanimClass(p.particle):rankAnim(p.rank);
-    const au=p.username?`<span class="user-link" data-particle="${anim}" style="color:${nc};font-weight:700;position:relative;display:inline-block" onclick="viewUserProfile('${esc(p.username)}')">${esc(p.username)}${p.badge?` <span style="font-size:11px;opacity:.8">${esc(p.badge)}</span>`:''}</span>`:'<span style="color:#444">Anonymous</span>';
-    const cmt=p.comment_count>0?`<span style="color:#555;font-size:11px;margin-left:6px">&#128172;${p.comment_count}</span>`:'';
-    return`<tr ${bg}><td><span class="paste-link" onclick="viewPaste('${esc(p.link)}')">${esc(p.title)}${cmt}</span></td><td>${p.views}</td><td>${au}</td><td>${timeAgo(p.created_at)}</td></tr>`;
+function buildHome() {
+  const pinned = S.pastes.filter(p => p.pinned), regular = S.pastes.filter(p => !p.pinned);
+  const row = p => {
+    const nc = p.color || rankColor(p.rank);
+    const anim = p.particle && p.particle !== 'none' ? p.particle : rankAnim(p.rank);
+    const au = p.username
+      ? `<span class="user-link" data-particle="${anim}" style="color:${nc};font-weight:700;position:relative;display:inline-block" onclick="viewUserProfile('${esc(p.username)}')">${esc(p.username)}${p.badge ? ` <span style="font-size:11px;opacity:.8">${esc(p.badge)}</span>` : ''}</span>`
+      : '<span style="color:#444">Anonymous</span>';
+    return `<tr><td><span class="paste-link" onclick="viewPaste('${esc(p.link)}')">${esc(p.title)}</span></td><td>${p.views}</td><td>${au}</td><td>${timeAgo(p.created_at)}</td></tr>`;
   };
-  const pages=()=>{
-    let h=`<button onclick="changePage(Math.max(1,${S.currentPage}-1))">&lt;</button>`;
-    for(let i=Math.max(1,S.currentPage-2);i<=Math.min(S.pages,S.currentPage+2);i++)
-      h+=`<button class="${i===S.currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
-    h+=`<button onclick="changePage(Math.min(${S.pages},${S.currentPage}+1))">&gt;</button>`;
+  const pages = () => {
+    let h = `<button onclick="changePage(Math.max(1,${S.currentPage}-1))">&lt;</button>`;
+    for (let i = Math.max(1, S.currentPage - 2); i <= Math.min(S.pages, S.currentPage + 2); i++)
+      h += `<button class="${i === S.currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+    h += `<button onclick="changePage(Math.min(${S.pages},${S.currentPage}+1))">&gt;</button>`;
     return h;
   };
-  return`
+  return `
   <div class="search-area">
     <span class="search-label">Search for a paste</span>
     <div class="search-row">
@@ -785,11 +538,11 @@ function buildHome(){
   <div class="showing">Showing ${S.pastes.length} of ${S.total} pastes</div>
   <div class="pagination">${pages()}</div>
   <div class="container">
-    ${pinned.length?`<div class="section"><h2>Pinned</h2><table class="pinned-table"><thead><tr><th>Title</th><th>Views</th><th>Author</th><th>Added</th></tr></thead><tbody>${pinned.map(row).join('')}</tbody></table></div>`:''}
+    ${pinned.length ? `<div class="section"><h2 style="font-size:12px;font-weight:700;margin-bottom:8px;color:#fff;letter-spacing:1px;text-transform:uppercase">Pinned</h2><table class="pinned-table"><thead><tr><th>Title</th><th>Views</th><th>Author</th><th>Added</th></tr></thead><tbody>${pinned.map(row).join('')}</tbody></table></div>` : ''}
     <div class="section">
       <table class="main-table">
         <thead><tr><th>Title</th><th>Views</th><th>Author</th><th>Added</th></tr></thead>
-        <tbody>${regular.length?regular.map(row).join(''):'<tr><td colspan="4" style="text-align:center;color:#333;padding:30px;font-family:monospace">No pastes found</td></tr>'}</tbody>
+        <tbody>${regular.length ? regular.map(row).join('') : '<tr><td colspan="4" style="text-align:center;color:#333;padding:30px;font-family:monospace">No pastes found</td></tr>'}</tbody>
       </table>
     </div>
   </div>
@@ -799,9 +552,9 @@ function buildHome(){
 }
 
 // ── UPLOAD ────────────────────────────────────────────────────────────────────
-function buildUpload(){
-  if(!S.user)return`<div class="auth-page"><div class="auth-box"><h2>Login Required</h2><p style="color:#666;margin-bottom:16px;font-size:13px">You must be logged in to paste.</p><button class="btn btn-primary" onclick="navigate('auth')">Login / Register</button></div></div>`;
-  return`<div class="container" style="max-width:860px"><div style="padding:20px 0">
+function buildUpload() {
+  if (!S.user) return `<div class="auth-page"><div class="auth-box"><h2>Login Required</h2><p style="color:#666;margin-bottom:16px;font-size:13px">You must be logged in to paste.</p><button class="btn btn-primary" onclick="navigate('auth')">Login / Register</button></div></div>`;
+  return `<div class="container" style="max-width:860px"><div style="padding:20px 0">
     <h2 style="font-size:13px;font-weight:700;margin-bottom:16px;color:#fff;letter-spacing:1px;text-transform:uppercase">New Paste</h2>
     <div class="form-group"><label class="form-label">Title</label><input type="text" id="pasteTitle" placeholder="Untitled"></div>
     <div class="form-group"><label class="form-label">Content</label><textarea id="pasteContent" placeholder="Paste your text here..." style="min-height:260px"></textarea></div>
@@ -815,66 +568,59 @@ function buildUpload(){
 }
 
 // ── VIEW PASTE ────────────────────────────────────────────────────────────────
-function buildView(){
-  const p=S.viewPaste;
-  if(!p)return'<div style="padding:40px 20px;color:#333;font-family:monospace">Paste not found.</div>';
-  const nc=p.color||rankColor(p.rank);
-  const au=p.username
-    ?`<a style="color:${nc};cursor:pointer;font-weight:700" onclick="viewUserProfile('${esc(p.username)}')">${esc(p.username)}${p.badge?' <span style="font-size:11px;opacity:.8">'+esc(p.badge)+'</span>':''}</a>`
-    :'<span style="color:#555">Anonymous</span>';
-  const canDel=S.user?.role==='admin'||S.user?.id===p.author_id;
-  const liked=(p.liked_by||[]).includes(S.user?.id);
-  const likeCount=(p.liked_by||[]).length;
-  const barColor=p.premium&&p.bar_color?p.bar_color:null;
-  function hexToRgb(hex){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`${r},${g},${b}`;}catch(e){return'180,60,60';}}
-  const barRgb=barColor?hexToRgb(barColor):null;
-  const hasAuthor=!!p.username;
-  const isMyPaste=S.user&&S.user.id===p.author_id;
-
-  // FIX 4: paste comments — ids are PocketBase strings, must be quoted in onclick
-  const comments=(p.comments||[]).map(c=>{
-    const cc=c.color||rankColor(c.rank);
-    const canDelC=S.user?.role==='admin'||S.user?.id===c.author_id;
-    return`<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+function buildView() {
+  const p = S.viewPaste;
+  if (!p) return '<div style="padding:40px 20px;color:#333;font-family:monospace">Paste not found.</div>';
+  const nc = p.color || rankColor(p.rank);
+  const au = p.username
+    ? `<a style="color:${nc};cursor:pointer;font-weight:700" onclick="viewUserProfile('${esc(p.username)}')">${esc(p.username)}${p.badge ? ` <span style="font-size:11px;opacity:.8">${esc(p.badge)}</span>` : ''}</a>`
+    : '<span style="color:#555">Anonymous</span>';
+  const canDel = S.profile?.role === 'admin' || S.user?.id === p.author_id;
+  const liked = (p.liked_by || []).includes(S.user?.id);
+  const likeCount = (p.liked_by || []).length;
+  function hexToRgb(hex) { try { const r = parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `${r},${g},${b}`; } catch(e) { return '180,60,60'; } }
+  const barRgb = p.premium && p.bar_color ? hexToRgb(p.bar_color) : null;
+  const isMyPaste = S.user && S.user.id === p.author_id;
+  const comments = (p.comments || []).map(c => {
+    const cc = c.color || rankColor(c.rank);
+    const canDelC = S.profile?.role === 'admin' || S.user?.id === c.author_id;
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
-        <span style="color:${cc};cursor:pointer;font-weight:700;font-size:13px" onclick="viewUserProfile('${esc(c.username)}')">${esc(c.username)}${c.badge?` <span style="font-size:11px;opacity:.7">${esc(c.badge)}</span>`:''}</span>
+        <span style="color:${cc};cursor:pointer;font-weight:700;font-size:13px" onclick="viewUserProfile('${esc(c.username)}')">${esc(c.username)}${c.badge ? ` <span style="font-size:11px;opacity:.7">${esc(c.badge)}</span>` : ''}</span>
         <span style="color:var(--text3);font-size:11px;font-family:monospace">${timeAgo(c.created_at)}</span>
-        ${canDelC?`<span style="color:var(--accent);font-size:11px;cursor:pointer;margin-left:auto;font-family:monospace" onclick="delComment('${c.id}')">delete</span>`:''}
+        ${canDelC ? `<span style="color:var(--accent);font-size:11px;cursor:pointer;margin-left:auto;font-family:monospace" onclick="delComment('${c.id}')">delete</span>` : ''}
       </div>
       <div style="color:var(--text);font-size:13px;line-height:1.6">${esc(c.content)}</div>
     </div>`;
   }).join('');
-
-  return`
+  return `
   <div style="display:flex;min-height:calc(100vh - 42px)">
-    <div style="flex:1;min-width:0;padding:0;position:relative">
-      ${barRgb?`<div style="height:2px;background:linear-gradient(90deg,transparent 0%,rgba(${barRgb},.18) 25%,rgba(${barRgb},.38) 50%,rgba(${barRgb},.18) 75%,transparent 100%);pointer-events:none"></div>`:''}
+    <div style="flex:1;min-width:0;position:relative">
+      ${barRgb ? `<div style="height:2px;background:linear-gradient(90deg,transparent 0%,rgba(${barRgb},.18) 25%,rgba(${barRgb},.38) 50%,rgba(${barRgb},.18) 75%,transparent 100%)"></div>` : ''}
       <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;justify-content:space-between">
         <span style="color:#fff;font-size:14px;font-weight:700">${esc(p.title)}</span>
         <div style="display:flex;gap:6px;align-items:center">
           <button class="btn btn-sm" onclick="copyPaste()">Copy</button>
-          <!-- FIX 5: PocketBase IDs are strings — must use quotes in inline onclick -->
-          <span class="like-btn ${liked?'liked':''}" onclick="doLike('${p.id}')">&#9829; ${likeCount}</span>
-          ${canDel?`<button class="btn btn-sm btn-red" onclick="deleteCurrentPaste('${p.id}')">Delete</button>`:''}
+          <span class="like-btn ${liked ? 'liked' : ''}" onclick="doLike('${p.id}')">&#9829; ${likeCount}</span>
+          ${canDel ? `<button class="btn btn-sm btn-red" onclick="deleteCurrentPaste('${p.id}')">Delete</button>` : ''}
           <button class="btn btn-sm" onclick="navigate('home')">&larr; Back</button>
         </div>
       </div>
       <div style="font-family:'Share Tech Mono',monospace;font-size:13px;line-height:1.75;color:#c0c0c0;padding:16px 18px;white-space:pre-wrap;word-break:break-all;min-height:60vh">${esc(p.content)}</div>
       <div style="border-top:1px solid var(--border);padding:16px 18px;background:var(--bg2)">
-        <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Comments (${(p.comments||[]).length})</div>
-        <!-- FIX 6: submitComment needs quoted string ID -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Comments (${(p.comments || []).length})</div>
         ${S.user
-          ?`<div style="margin-bottom:14px"><textarea id="commentText" placeholder="Write a comment..." style="min-height:60px;width:100%;background:var(--bg3);border:1px solid var(--border2);color:#ccc;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea><button class="btn btn-sm btn-primary" style="margin-top:6px" onclick="submitComment('${p.id}')">Post Comment</button></div>`
-          :`<p style="color:#555;font-size:12px;margin-bottom:12px;font-family:monospace"><a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Login</a> to comment</p>`}
-        ${comments||'<p style="color:#444;font-size:12px;font-family:monospace">No comments yet.</p>'}
+          ? `<div style="margin-bottom:14px"><textarea id="commentText" placeholder="Write a comment..." style="min-height:60px;width:100%;background:var(--bg3);border:1px solid var(--border2);color:#ccc;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea><button class="btn btn-sm btn-primary" style="margin-top:6px" onclick="submitComment('${p.id}')">Post Comment</button></div>`
+          : `<p style="color:#555;font-size:12px;margin-bottom:12px;font-family:monospace"><a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Login</a> to comment</p>`}
+        ${comments || '<p style="color:#444;font-size:12px;font-family:monospace">No comments yet.</p>'}
       </div>
     </div>
-    <div style="width:300px;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2);padding:0">
+    <div style="width:300px;flex-shrink:0;border-left:1px solid var(--border);background:var(--bg2)">
       <div style="padding:18px 16px;border-bottom:1px solid var(--border);text-align:right">
-        <div style="font-size:22px;font-weight:700;letter-spacing:3px;color:#fff;font-family:'Rajdhani',sans-serif;text-shadow:0 0 20px rgba(255,34,34,.3)">FRDoxBin</div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:3px;color:#fff;font-family:'Rajdhani',sans-serif">FRDoxBin</div>
         ${S.user
-          ?`<div style="color:var(--text2);font-size:12px;margin-top:4px"><span style="color:${getUserColor(S.user.id)};cursor:pointer;font-weight:700" onclick="viewUserProfile('${esc(S.user.username)}')">${esc(S.user.username)}</span> &bull; <a onclick="doLogout()" style="cursor:pointer">Logout</a></div>`
-          :`<div style="color:var(--text2);font-size:12px;margin-top:4px"><a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Login</a> or <a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Register</a> to manage your pastes.</div>`}
+          ? `<div style="color:var(--text2);font-size:12px;margin-top:4px"><span style="color:${S.profile?.color||'#2A9FD6'};cursor:pointer;font-weight:700" onclick="viewUserProfile('${esc(S.profile?.username||'')}')">${esc(S.profile?.username||'')}</span> &bull; <a onclick="doLogout()" style="cursor:pointer">Logout</a></div>`
+          : `<div style="color:var(--text2);font-size:12px;margin-top:4px"><a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Login</a> or <a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Register</a></div>`}
       </div>
       <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
         <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Paste Info</div>
@@ -886,53 +632,50 @@ function buildView(){
           <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text3)">Likes</span><span style="color:var(--text2);font-family:monospace">${likeCount}</span></div>
         </div>
       </div>
-      ${hasAuthor?`
+      ${p.username ? `
       <div style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="viewUserProfile('${esc(p.username)}')">
         <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Author</div>
         <div style="display:flex;align-items:center;gap:10px">
-          <!-- FIX 7: avatar_url was missing from apiGetPaste return — now included -->
-          <div style="width:36px;height:36px;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:${nc};overflow:hidden;flex-shrink:0">${p.avatar_url?`<img src="${esc(p.avatar_url)}" style="width:100%;height:100%;object-fit:cover">`:esc((p.username||'?')[0].toUpperCase())}</div>
+          <div style="width:36px;height:36px;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:${nc};overflow:hidden;flex-shrink:0">${p.avatar_url ? `<img src="${esc(p.avatar_url)}" style="width:100%;height:100%;object-fit:cover">` : esc((p.username || '?')[0].toUpperCase())}</div>
           <div>
-            <div style="color:${nc};font-weight:700;font-size:13px">${esc(p.username)} ${p.badge?`<span style="font-size:11px;opacity:.8">${esc(p.badge)}</span>`:''}</div>
-            <div style="color:var(--text3);font-size:11px;font-family:monospace">Voir le profil</div>
+            <div style="color:${nc};font-weight:700;font-size:13px">${esc(p.username)} ${p.badge ? `<span style="font-size:11px;opacity:.8">${esc(p.badge)}</span>` : ''}</div>
+            <div style="color:var(--text3);font-size:11px;font-family:monospace">View profile</div>
           </div>
         </div>
-      </div>`:''}
-      ${isMyPaste&&p.premium?`
+      </div>` : ''}
+      ${isMyPaste && p.premium ? `
       <div style="padding:14px 16px;border-bottom:1px solid var(--border)">
         <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Bar Color</div>
-        <div id="barPreview" style="height:2px;margin-bottom:8px;background:linear-gradient(90deg,transparent 0%,rgba(180,60,60,.18) 25%,rgba(180,60,60,.38) 50%,rgba(180,60,60,.18) 75%,transparent 100%);transition:background .2s"></div>
         <div style="display:flex;align-items:center;gap:8px">
-          <input type="color" id="barColorPick" value="${p.bar_color||'#b43c3c'}" style="width:36px;height:28px;padding:0;border:1px solid var(--border2);background:none;cursor:pointer;flex-shrink:0" oninput="updateBarPreview(this.value)">
+          <input type="color" id="barColorPick" value="${p.bar_color || '#b43c3c'}" style="width:36px;height:28px;padding:0;border:1px solid var(--border2);background:none;cursor:pointer;flex-shrink:0">
           <button class="btn btn-sm btn-gold" onclick="saveBarColor()">Apply</button>
         </div>
-        <div style="color:var(--text3);font-size:10px;font-family:monospace;margin-top:6px">Teintes sombres recommandées</div>
-      </div>`:''}
+      </div>` : ''}
       <div style="padding:14px 16px">
         <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">New Paste</div>
         ${S.user
-          ?`<button class="btn btn-primary" style="width:100%;text-align:center" onclick="navigate('upload')">+ Add Paste</button>`
-          :`<button class="btn btn-primary" style="width:100%;text-align:center" onclick="navigate('auth')">Login to paste</button>`}
+          ? `<button class="btn btn-primary" style="width:100%" onclick="navigate('upload')">+ Add Paste</button>`
+          : `<button class="btn btn-primary" style="width:100%" onclick="navigate('auth')">Login to paste</button>`}
       </div>
     </div>
   </div>`;
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
-function buildAuth(){
-  return`<div class="auth-page"><div class="auth-box">
+function buildAuth() {
+  return `<div class="auth-page"><div class="auth-box">
     <div class="auth-tabs">
       <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
       <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</div>
     </div>
     <div id="auth-login">
-      <div class="form-group"><label class="form-label">Email ou Pseudo</label><input type="text" id="loginUser" placeholder="email@exemple.com ou votre pseudo" autocomplete="username"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" id="loginEmail" placeholder="email@exemple.com" autocomplete="email"></div>
       <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" id="loginPass" placeholder="Mot de passe" autocomplete="current-password"></div>
       <div id="loginError" class="error-msg" style="display:none"></div>
       <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="doLogin()">Se connecter</button>
     </div>
     <div id="auth-register" style="display:none">
-      <div class="form-group"><label class="form-label">Pseudo</label><input type="text" id="regUser" placeholder="Pseudo (min 3 chars, lettres/chiffres/_)" autocomplete="username"></div>
+      <div class="form-group"><label class="form-label">Pseudo</label><input type="text" id="regUser" placeholder="Pseudo (min 3 chars)" autocomplete="username"></div>
       <div class="form-group"><label class="form-label">Email</label><input type="email" id="regEmail" placeholder="email@exemple.com" autocomplete="email"></div>
       <div class="form-group"><label class="form-label">Mot de passe</label><input type="password" id="regPass" placeholder="Mot de passe (min 6 chars)" autocomplete="new-password"></div>
       <div id="regError" class="error-msg" style="display:none"></div>
@@ -942,398 +685,267 @@ function buildAuth(){
 }
 
 // ── PROFILE ───────────────────────────────────────────────────────────────────
-function buildProfile(){
-  const u=S.viewUser;
-  if(!u)return'<div style="padding:40px 20px;color:#333;font-family:monospace">User not found.</div>';
-  const isMe=S.user?.id===u.id;
-  // FIX 8: S.user session does NOT contain following[] — must use S_fullUser
-  const amIFollowing=(()=>{if(!S.user)return false; return (S_fullUser?.following||[]).includes(u.id)||false;})();
-  const nc=u.color||rankColor(u.rank);
-  const rl=rankLabel(u.rank);
-  const anim=u.particle&&u.particle!=='none'?uanimClass(u.particle):rankAnim(u.rank);
-  const av=u.avatar_url
-    ?`<img src="${esc(u.avatar_url)}" style="width:100%;height:100%;object-fit:cover" alt="">`
-    :`<span style="color:${nc};font-size:32px;font-weight:700">${esc((u.username[0]).toUpperCase())}</span>`;
-
-  const profileComments=apiGetProfileComments(u.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  const pcRows=profileComments.map(c=>{
-    // FIX 9: cuColor was hardcoded '#2A9FD6' — look up from allUsers cache
-    const cuCached = S.allUsers?.find(x=>x.id===c.author_id);
-    const cuColor = cuCached?.color || rankColor(cuCached?.rank||'user');
-    const canDelC=S.user?.role==='admin'||S.user?.id===c.author_id||S.user?.id===u.id;
-    return`<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 14px;border-bottom:1px solid var(--border)">
+function buildProfile() {
+  const u = S.viewUser;
+  if (!u) return '<div style="padding:40px 20px;color:#333;font-family:monospace">User not found.</div>';
+  const isMe = S.user?.id === u.id;
+  const amIFollowing = (S.profile?.following || []).includes(u.id);
+  const nc = u.color || rankColor(u.rank);
+  const rl = rankLabel(u.rank);
+  const anim = u.particle && u.particle !== 'none' ? u.particle : rankAnim(u.rank);
+  const av = u.avatar_url
+    ? `<img src="${esc(u.avatar_url)}" style="width:100%;height:100%;object-fit:cover" alt="">`
+    : `<span style="color:${nc};font-size:32px;font-weight:700">${esc(u.username[0].toUpperCase())}</span>`;
+  const profileComments = apiGetProfileComments(u.id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const pcRows = profileComments.map(c => {
+    const canDelC = S.profile?.role === 'admin' || S.user?.id === c.author_id || S.user?.id === u.id;
+    return `<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 14px;border-bottom:1px solid var(--border)">
       <div style="flex:1;min-width:0">
-        <span style="color:${cuColor};font-weight:700;cursor:pointer;font-size:13px" onclick="viewUserProfile('${esc(c.author_username||'')}')">${esc(c.author_username||'?')}</span><span style="color:var(--text3);font-size:13px">: ${esc(c.content)}</span>
+        <span style="color:#2A9FD6;font-weight:700;cursor:pointer;font-size:13px" onclick="viewUserProfile('${esc(c.author_username||'')}')">${esc(c.author_username || '?')}</span><span style="color:var(--text3);font-size:13px">: ${esc(c.content)}</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:12px">
-        <span style="color:var(--text3);font-size:11px;font-family:monospace;white-space:nowrap">${timeAgo(c.created_at)}</span>
-        ${canDelC?`<span style="color:var(--accent);font-size:11px;cursor:pointer;font-family:monospace" onclick="delProfileComment('${u.id}',${c.id})">del</span>`:''}
+        <span style="color:var(--text3);font-size:11px;font-family:monospace">${timeAgo(c.created_at)}</span>
+        ${canDelC ? `<span style="color:var(--accent);font-size:11px;cursor:pointer;font-family:monospace" onclick="delProfileComment('${u.id}',${c.id})">del</span>` : ''}
       </div>
     </div>`;
   }).join('');
-
-  const pasteRows=(u.pastes||[]).map(p=>`
-    <tr>
-      <td><span class="paste-link" onclick="viewPaste('${esc(p.link)}')">${esc(p.title)}</span></td>
-      <td>${p.comment_count||0}</td>
-      <td>${p.views}</td>
-      <td style="font-family:monospace;font-size:12px">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
-    </tr>`).join('');
-
-  const pasteCount=(u.pastes||[]).length;
-  const likeCount=u.likes_received||0;
-
-  return`
+  const pasteRows = (u.pastes || []).map(p => `
+    <tr><td><span class="paste-link" onclick="viewPaste('${esc(p.link)}')">${esc(p.title)}</span></td><td>${p.views}</td><td style="font-family:monospace;font-size:12px">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td></tr>`).join('');
+  return `
   <div class="profile-page">
     <canvas id="profile-canvas"></canvas>
     <div class="profile-inner" style="max-width:820px;margin:0 auto;padding:24px 16px">
-      <div style="background:rgba(14,14,14,.92);border:1px solid var(--border2);margin-bottom:12px;position:relative;overflow:hidden">
-        <div style="padding:20px 20px 16px;display:flex;align-items:center;gap:18px">
+      <div style="background:rgba(14,14,14,.92);border:1px solid var(--border2);margin-bottom:12px">
+        <div style="padding:20px;display:flex;align-items:center;gap:18px">
           <div style="width:72px;height:72px;flex-shrink:0;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;background:var(--bg3);overflow:hidden">${av}</div>
           <div style="flex:1;min-width:0">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
               <span data-particle="${anim}" style="color:${nc};font-size:18px;font-weight:700;position:relative;display:inline-block">${esc(u.username)}</span>
-              ${rl?`<span style="font-size:13px;color:${nc};font-weight:700">${rl}</span>`:''}
-              ${u.bio?`<span style="color:var(--text3);font-size:13px">&nbsp;|&nbsp;${esc(u.bio)}</span>`:''}
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--text2);margin-bottom:8px" class="profile-socials">
-              ${u.discord?`<a href="https://discord.com/users/${esc(u.discord)}" target="_blank" class="social-link" title="Discord">Dsc&nbsp;${esc(u.discord)}</a>`:''}
-              ${u.twitter?`<a href="https://x.com/${esc(u.twitter.replace('@',''))}" target="_blank" class="social-link" title="Twitter / X">X&nbsp;${esc(u.twitter)}</a>`:''}
-              ${u.instagram?`<a href="https://instagram.com/${esc(u.instagram.replace('@',''))}" target="_blank" class="social-link" title="Instagram">Ig&nbsp;${esc(u.instagram)}</a>`:''}
-              ${u.github?`<a href="https://github.com/${esc(u.github.replace('@',''))}" target="_blank" class="social-link" title="GitHub">Gh&nbsp;${esc(u.github)}</a>`:''}
-              ${u.website?`<a href="${esc(u.website)}" target="_blank" rel="noopener noreferrer" class="social-link" title="Website">Web</a>`:''}
+              ${rl ? `<span style="font-size:13px;color:${nc};font-weight:700">${rl}</span>` : ''}
+              ${u.bio ? `<span style="color:var(--text3);font-size:13px">&nbsp;|&nbsp;${esc(u.bio)}</span>` : ''}
             </div>
             <div style="display:flex;gap:20px;font-size:13px">
-              <span><strong style="color:#fff">${u.following||0}</strong> <span style="color:var(--text2)">${t('following')}</span></span>
-              <span><strong style="color:#fff">${u.followers||0}</strong> <span style="color:var(--text2)">${t('followers')}</span></span>
+              <span><strong style="color:#fff">${u.following || 0}</strong> <span style="color:var(--text2)">${t('following')}</span></span>
+              <span><strong style="color:#fff">${u.followers || 0}</strong> <span style="color:var(--text2)">${t('followers')}</span></span>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-            <!-- FIX 10: doFollow needs quoted string ID -->
-            ${!isMe&&S.user?`<button class="btn btn-sm ${amIFollowing?'btn-red':''}" onclick="doFollow('${u.id}')">${amIFollowing?t('unfollow'):t('follow')}</button>`:''}
-            ${isMe?`<button class="btn btn-sm" onclick="navigate('settings')">${t('edit_profile')}</button>`:''}
+            ${!isMe && S.user ? `<button class="btn btn-sm ${amIFollowing ? 'btn-red' : ''}" onclick="doFollow('${u.id}')">${amIFollowing ? t('unfollow') : t('follow')}</button>` : ''}
+            ${isMe ? `<button class="btn btn-sm" onclick="navigate('settings')">${t('edit_profile')}</button>` : ''}
           </div>
+        </div>
+        <div style="padding:0 20px 16px;display:flex;gap:8px;flex-wrap:wrap">
+          ${u.discord ? `<a href="https://discord.com/users/${esc(u.discord)}" target="_blank" class="social-link">Dsc ${esc(u.discord)}</a>` : ''}
+          ${u.twitter ? `<a href="https://x.com/${esc(u.twitter.replace('@',''))}" target="_blank" class="social-link">X ${esc(u.twitter)}</a>` : ''}
+          ${u.instagram ? `<a href="https://instagram.com/${esc(u.instagram.replace('@',''))}" target="_blank" class="social-link">Ig ${esc(u.instagram)}</a>` : ''}
+          ${u.github ? `<a href="https://github.com/${esc(u.github.replace('@',''))}" target="_blank" class="social-link">Gh ${esc(u.github)}</a>` : ''}
+          ${u.website ? `<a href="${esc(u.website)}" target="_blank" class="social-link">Web</a>` : ''}
         </div>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border2);margin-bottom:12px">
         <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:#fff">Info</div>
-        <div style="padding:0">
-          ${[
-            ['UID', u.id],
-            [t('pastes'), pasteCount],
-            ['Likes', likeCount],
-            ['Created:', new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})],
-          ].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--text2)">${k}</span><span style="color:#ccc;font-family:monospace">${v}</span></div>`).join('')}
-        </div>
+        ${[['UID', u.id],[t('pastes'), (u.pastes||[]).length],['Likes', u.likes_received||0],['Joined', new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--text2)">${k}</span><span style="color:#ccc;font-family:monospace">${v}</span></div>`).join('')}
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border2);margin-bottom:12px">
         <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:#fff">${t('pastes')}</div>
-        ${pasteRows
-          ?`<table style="width:100%;border-collapse:collapse;font-size:13px">
-              <tbody>${pasteRows}</tbody>
-            </table>
-            <div style="padding:8px 16px;color:var(--text3);font-size:12px;font-family:monospace;border-top:1px solid var(--border)">Showing ${(u.pastes||[]).length} out of ${pasteCount} pastes</div>`
-          :`<div style="padding:20px;text-align:center;font-size:13px">
-              <span data-particle="${anim}" style="color:${nc};font-weight:700;position:relative;display:inline-block">${esc(u.username)}</span>
-              <span style="color:var(--text2)"> has no pastes.</span>
-            </div>
-            <div style="padding:8px 16px;color:var(--text3);font-size:12px;font-family:monospace;border-top:1px solid var(--border)">Showing 0 out of 0 pastes</div>`}
+        ${pasteRows ? `<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="padding:6px 16px;text-align:left;color:var(--text2);font-size:11px;border-bottom:1px solid var(--border2)">Title</th><th style="padding:6px 16px;text-align:center;color:var(--text2);font-size:11px;border-bottom:1px solid var(--border2)">Views</th><th style="padding:6px 16px;text-align:center;color:var(--text2);font-size:11px;border-bottom:1px solid var(--border2)">Date</th></tr></thead><tbody>${pasteRows}</tbody></table>` : `<div style="padding:20px;text-align:center;color:var(--text3);font-family:monospace;font-size:13px">No pastes yet.</div>`}
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border2)">
         <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:#fff">Comments (${profileComments.length})</div>
-        ${pcRows||`<div style="padding:16px;color:var(--text3);font-size:13px;font-family:monospace;text-align:center">No comments yet.</div>`}
-        <!-- FIX 11: submitProfileComment needs quoted string ID -->
-        ${S.user&&!isMe?`
+        ${pcRows || `<div style="padding:16px;color:var(--text3);font-size:13px;font-family:monospace;text-align:center">No comments yet.</div>`}
+        ${S.user && !isMe ? `
           <div style="padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px">
-            <input type="text" id="profileCommentText" placeholder="Leave a comment..." style="flex:1;height:32px;background:var(--bg3);border:1px solid var(--border2);color:#ccc;padding:5px 10px;font-size:13px;font-family:inherit;outline:none">
+            <input type="text" id="profileCommentText" placeholder="Leave a comment..." style="flex:1;height:32px;padding:5px 10px">
             <button class="btn btn-sm btn-primary" onclick="submitProfileComment('${u.id}')">Post</button>
-          </div>`
-        :(S.user&&isMe?'':`<div style="padding:10px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)"><a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">${t('login')}</a> to comment</div>`)}
+          </div>` : (S.user && isMe ? '' : `<div style="padding:10px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)"><a onclick="navigate('auth')" style="cursor:pointer;color:var(--blue)">Login</a> to comment</div>`)}
       </div>
     </div>
   </div>`;
 }
 
-function uanimClass(particle){ return particle&&particle!=='none'?particle:''; }
-function rankAnim(rank){ return{admin:'fire',mod:'matrix',manager:'fire',council:'stars',rich:'stars',criminal:'stars',vip:'stars'}[rank]||''; }
-
-// ── USERS LIST ────────────────────────────────────────────────────────────────
-function buildUsers(){
-  const allUsers=S.allUsers||[];
-  const total=allUsers.length;
-  const sv=S.userSearch||'';
-  const filtered=sv?allUsers.filter(u=>u.username.toLowerCase().includes(sv.toLowerCase())):allUsers;
-  const GROUPS=[
-    {key:'admin', label:t('admin_lbl')},
-    {key:'manager', label:t('manager_lbl')},
-    {key:'mod', label:t('mod_lbl')},
-    {key:'council', label:t('council_lbl')},
-    {key:'rich', label:t('rich_lbl')},
-    {key:'criminal', label:t('criminal_lbl')},
-    {key:'vip', label:t('vip_lbl')},
-    {key:'user', label:t('user_lbl')},
+// ── USERS ─────────────────────────────────────────────────────────────────────
+function buildUsers() {
+  const all = S.allUsers || [], sv = S.userSearch || '';
+  const filtered = sv ? all.filter(u => u.username.toLowerCase().includes(sv.toLowerCase())) : all;
+  const GROUPS = [
+    {key:'admin',label:t('admin_lbl')},{key:'manager',label:t('manager_lbl')},{key:'mod',label:t('mod_lbl')},
+    {key:'council',label:t('council_lbl')},{key:'rich',label:t('rich_lbl')},{key:'criminal',label:t('criminal_lbl')},
+    {key:'vip',label:t('vip_lbl')},{key:'user',label:t('user_lbl')},
   ];
-  const row=u=>{
-    const nc=u.color||rankColor(u.rank);
-    const anim=u.particle&&u.particle!=='none'?uanimClass(u.particle):rankAnim(u.rank);
-    const pc=u.paste_count!=null?u.paste_count:'—';
-    const cc=u.comment_count!=null?u.comment_count:'—';
-    const joined=u.created_at?new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
-    return`<tr>
-      <td style="color:var(--text3);font-family:monospace;font-size:12px">${esc(String(u.id||''))}</td>
-      <td><span class="user-link" data-particle="${anim}" style="color:${nc};font-weight:700;position:relative;display:inline-block" onclick="viewUserProfile('${esc(u.username)}')">${esc(u.username)}</span></td>
-      <td style="font-family:monospace">${pc}</td>
-      <td style="font-family:monospace">${cc}</td>
-      <td style="font-family:monospace;font-size:12px;color:var(--text2)">${joined}</td>
-    </tr>`;
+  const row = u => {
+    const nc = u.color || rankColor(u.rank);
+    const anim = u.particle && u.particle !== 'none' ? u.particle : rankAnim(u.rank);
+    return `<tr><td style="color:var(--text3);font-family:monospace;font-size:12px">${esc(String(u.id||'').substring(0,8))}...</td><td><span class="user-link" data-particle="${anim}" style="color:${nc};font-weight:700;position:relative;display:inline-block" onclick="viewUserProfile('${esc(u.username)}')">${esc(u.username)}</span></td><td style="font-family:monospace;font-size:12px;color:var(--text2)">${u.created_at ? new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—'}</td></tr>`;
   };
-  const sections=GROUPS.map(g=>{
-    const members=filtered.filter(u=>u.rank===g.key||(!u.rank&&g.key==='user')).sort((a,b)=>a.id-b.id);
-    if(!members.length)return'';
-    return`<div style="margin-bottom:24px">
-      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:.5px">${g.label}</div>
+  const sections = GROUPS.map(g => {
+    const members = filtered.filter(u => u.rank === g.key || (!u.rank && g.key === 'user'));
+    if (!members.length) return '';
+    return `<div style="margin-bottom:24px">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px">${g.label}</div>
       <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <thead><tr>
-          <th style="background:var(--bg3);padding:7px 10px;text-align:left;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px;text-transform:uppercase;letter-spacing:.5px">ID</th>
-          <th style="background:var(--bg3);padding:7px 10px;text-align:left;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px;text-transform:uppercase;letter-spacing:.5px">${t('title')}</th>
-          <th style="background:var(--bg3);padding:7px 10px;text-align:center;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px;text-transform:uppercase;letter-spacing:.5px">${t('pastes')}</th>
-          <th style="background:var(--bg3);padding:7px 10px;text-align:center;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px;text-transform:uppercase;letter-spacing:.5px">${t('comments_lbl')}</th>
-          <th style="background:var(--bg3);padding:7px 10px;text-align:center;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px;text-transform:uppercase;letter-spacing:.5px">${t('joined')}</th>
-        </tr></thead>
+        <thead><tr><th style="background:var(--bg3);padding:7px 10px;text-align:left;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px">ID</th><th style="background:var(--bg3);padding:7px 10px;text-align:left;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px">Username</th><th style="background:var(--bg3);padding:7px 10px;text-align:left;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border2);font-size:11px">Joined</th></tr></thead>
         <tbody>${members.map(row).join('')}</tbody>
       </table>
     </div>`;
   }).join('');
-  return`<div class="container" style="max-width:900px">
-    <h2 style="font-size:20px;font-weight:700;margin-top:24px;margin-bottom:12px;color:#fff;text-align:center">${t('users_title')}</h2>
-    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:8px">
-      <input type="text" placeholder="${t('search_users')}" value="${esc(sv)}" oninput="S.userSearch=this.value;render()" style="width:320px;height:34px;background:var(--bg3);border:1px solid var(--border2);color:#ccc;padding:5px 12px;font-size:13px;font-family:inherit;outline:none">
+  return `<div class="container" style="max-width:900px">
+    <h2 style="font-size:20px;font-weight:700;margin-top:24px;margin-bottom:12px;color:#fff;text-align:center">${t('users')}</h2>
+    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:20px">
+      <input type="text" placeholder="Search..." value="${esc(sv)}" oninput="S.userSearch=this.value;render()" style="width:320px;height:34px">
       <button class="btn" onclick="S.userSearch='';render()">&#215;</button>
     </div>
-    <div style="text-align:center;color:var(--text3);font-size:12px;font-family:monospace;margin-bottom:20px">${t('showing_users')} ${filtered.length} ${t('of_users')} ${total} ${t('total_users')}</div>
-    ${sections||`<p style="color:#444;text-align:center;font-family:monospace;padding:40px">${allUsers.length===0&&!sv?'Chargement...' : 'Aucun utilisateur trouvé.'}</p>`}
+    ${sections || '<p style="color:#444;text-align:center;font-family:monospace;padding:40px">No users found.</p>'}
   </div>`;
 }
-
-// ── SHOP ──────────────────────────────────────────────────────────────────────
-const SHOP_ITEMS=[
-  {id:'vip',label:'VIP',lc:'#cc66ff',price:30,rank:'vip',features:[['Preview','Anonymous [VIP]'],['Color','Light Purple'],['Paste highlight','Light purple'],['GIF profile picture',true],['Instant paste edits',true],['Unlist own pastes',false],['Private own pastes',false],['Password protected',false],['Username changes','1'],['Particle effects','Stars / Snow']]},
-  {id:'criminal',label:'Criminal',lc:'#9944cc',price:50,rank:'criminal',features:[['Preview','Anonymous [Criminal]'],['Color','Dark Purple'],['Paste highlight','Dark Purple'],['GIF profile picture',true],['Instant paste edits',true],['Unlist own pastes',true],['Private own pastes',true],['Password protected',false],['Username changes','2'],['Particle effects','Stars / Fire / Snow']]},
-  {id:'rich',label:'Rich',lc:'#ffd700',price:100,rank:'rich',features:[['Preview','Anonymous [Rich]'],['Color','Sparkling Gold'],['Paste highlight','Gold'],['GIF profile picture',true],['Instant paste edits',true],['Unlist own pastes',true],['Private own pastes',true],['Password protected',true],['Username changes','3'],['Particle effects','All + Matrix']]},
-  {id:'color',label:'Change Color',lc:'#fff',price:10,rank:null,features:[['Ability to change color',true],['Amount of colors','20']]}
-];
-const SHOP_COLORS=['#cc66ff','#9b59b6','#ff69b4','#e74c3c','#3498db','#2980b9','#e67e22','#f1c40f','#2ecc71','#1abc9c','#ecf0f1','#ffffff','#00ff41','#ff6b35','#a855f7','#06b6d4','#f97316','#84cc16','#ec4899','#6366f1'];
-function buildShop(){
-  const cards=SHOP_ITEMS.map(item=>{
-    const fr=item.features.map(([l,v])=>`<div class="shop-feat"><span>${esc(l)}</span>${v===true?'<span class="feat-yes">&#10003;</span>':v===false?'<span class="feat-no">&#10007;</span>':`<span class="feat-val">${esc(String(v))}</span>`}</div>`).join('');
-    const cc=item.id==='color'?`<div class="shop-colors">${SHOP_COLORS.map(c=>`<div class="shop-color-dot" style="background:${c}" title="${c}"></div>`).join('')}</div>`:'';
-    const btnClass=item.id==='rich'?'btn-gold':item.id==='criminal'?'btn-purple':item.id==='vip'?'btn-purple':'btn-primary';
-    return`<div class="shop-card">
-      <div class="shop-card-title" style="color:${item.lc}">${esc(item.label)}</div>
-      <div class="shop-card-price">$${item.price}</div>
-      ${fr}${cc}
-      <div style="margin-top:auto;padding-top:16px"><button class="btn ${btnClass}" style="width:100%" onclick="openShopModal('${item.id}','${item.label}',${item.price})">Purchase</button></div>
-    </div>`;
-  }).join('');
-  return`<div class="container" style="max-width:1100px">
-    <h2 style="font-size:13px;font-weight:700;margin-top:24px;color:#fff;letter-spacing:1px;text-transform:uppercase">Upgrades</h2>
-    <p style="color:#555;font-size:12px;margin-top:6px;margin-bottom:0;font-family:monospace">Purchases are processed via PayPal. After payment, contact admin with proof.</p>
-    <div class="shop-grid">${cards}</div>
-  </div>`;
-}
-function buildShopModal(){
-  const{id,label,price}=S.shopModal;
-  const pe=getSettings().paypal_email||'yourpaypal@email.com';
-  return`<div class="modal-overlay" onclick="closeShopModal(event)">
-    <div class="modal">
-      <span class="modal-close" onclick="S.shopModal=null;render()">&#215;</span>
-      <h3>Purchase: ${esc(label)}</h3>
-      <p style="color:#888;font-size:13px;margin-bottom:16px">Price: <strong style="color:#fff">$${price}</strong></p>
-      <div style="background:var(--bg3);border:1px solid var(--border2);padding:14px;margin-bottom:16px">
-        <p style="color:#ccc;font-size:13px;margin-bottom:10px"><strong>How to purchase:</strong></p>
-        <ol style="color:#888;font-size:13px;padding-left:20px;line-height:2.2">
-          <li>Send <strong style="color:#fff">$${price}</strong> via PayPal to <strong style="color:var(--blue)">${esc(pe)}</strong></li>
-          <li>Include your DoxBin username in the payment note</li>
-          <li>Send your PayPal transaction ID to admin</li>
-          <li>Your rank will be granted within 24h</li>
-        </ol>
-      </div>
-      <div style="display:flex;gap:8px">
-        <a href="https://www.paypal.com/paypalme/${encodeURIComponent(pe.split('@')[0])}/${price}" target="_blank" class="btn btn-primary" style="flex:1;text-align:center;display:block;padding:8px">Open PayPal</a>
-        <button class="btn" onclick="S.shopModal=null;render()">Cancel</button>
-      </div>
-      <p style="color:#444;font-size:11px;margin-top:12px;font-family:monospace">After payment, contact admin or wait for manual verification.</p>
-    </div>
-  </div>`;
-}
-function openShopModal(id,label,price){if(!S.user){navigate('auth');return;}S.shopModal={id,label,price};render();}
-function closeShopModal(e){if(e.target.className==='modal-overlay'){S.shopModal=null;render();}}
 
 // ── SETTINGS ──────────────────────────────────────────────────────────────────
-function buildSettings(){
-  if(!S.user)return`<div class="auth-page"><div class="auth-box"><h2>Login Required</h2><button class="btn btn-primary" onclick="navigate('auth')">Login</button></div></div>`;
-  const u=S_fullUser||S.user||{};
-  const uname=u.username||S.user?.username||'?';
-  const uPremium=u.premium||false;
-  const uBio=u.bio||'';
-  const uColor=u.color||'#2A9FD6';
-  const uAvatar=u.avatar_url||'';
-  return`<div class="container" style="max-width:600px"><div style="padding:24px 0">
+function buildSettings() {
+  if (!S.user) return `<div class="auth-page"><div class="auth-box"><h2>Login Required</h2><button class="btn btn-primary" onclick="navigate('auth')">Login</button></div></div>`;
+  const u = S.profile || {};
+  return `<div class="container" style="max-width:600px"><div style="padding:24px 0">
     <h2 style="font-size:13px;font-weight:700;margin-bottom:20px;color:#fff;letter-spacing:1px;text-transform:uppercase">Profile Settings</h2>
     <div class="form-group">
-      <label class="form-label">${t('avatar_lbl')} ${uPremium?'':'<span style="color:#555;font-weight:400">(Premium only)</span>'}</label>
+      <label class="form-label">${t('avatar_lbl')} ${u.premium ? '' : '<span style="color:#555;font-weight:400">(Premium only)</span>'}</label>
       <div style="display:flex;align-items:flex-start;gap:14px">
-        <div>
-          <div class="avatar-preview" id="avatarPreview" onclick="${uPremium?'document.getElementById(\'avatarFileInput\').click()':''}">
-            ${uAvatar?`<img id="avatarPreviewImg" src="${esc(uAvatar)}" alt="">`:`<span id="avatarPreviewImg" style="font-size:24px;font-weight:700;color:#fff">${esc(uname[0]?.toUpperCase()||'?')}</span>`}
-          </div>
-          <div class="avatar-preview-hint">${uPremium?'Click to change':''}</div>
+        <div class="avatar-preview" id="avatarPreview" onclick="${u.premium ? "document.getElementById('avatarFileInput').click()" : ''}">
+          ${u.avatar_url ? `<img id="avatarPreviewImg" src="${esc(u.avatar_url)}" alt="">` : `<span style="font-size:24px;font-weight:700;color:#fff">${esc((u.username || '?')[0].toUpperCase())}</span>`}
         </div>
-        <div style="flex:1">
-          <input type="file" id="avatarFileInput" accept="image/png,image/jpeg,image/gif,image/webp" ${uPremium?'':'disabled'} onchange="handleAvatarUpload(event)">
-          ${uPremium
-            ?`<button class="btn btn-sm" onclick="document.getElementById('avatarFileInput').click()" style="margin-bottom:6px">Upload image</button>
-               <div style="color:var(--text3);font-size:11px;font-family:monospace;margin-top:4px">PNG, JPG, GIF, WEBP &mdash; max 2 MB</div>
-               <button class="btn btn-sm btn-red" onclick="clearAvatar()" style="margin-top:6px">Remove image</button>`
-            :`<div style="color:#555;font-size:12px;font-family:monospace">Premium required to set a profile picture.</div>
-               <button class="btn btn-sm btn-gold" onclick="navigate('shop')" style="margin-top:8px">Get Premium &#9733;</button>`
-          }
+        <div>
+          <input type="file" id="avatarFileInput" accept="image/png,image/jpeg,image/gif,image/webp" ${u.premium ? '' : 'disabled'} onchange="handleAvatarUpload(event)">
+          ${u.premium ? `<button class="btn btn-sm" onclick="document.getElementById('avatarFileInput').click()">Upload</button><button class="btn btn-sm btn-red" onclick="clearAvatar()" style="margin-top:6px">Remove</button>` : `<div style="color:#555;font-size:12px;font-family:monospace">Premium required.</div><button class="btn btn-sm btn-gold" onclick="navigate('shop')" style="margin-top:8px">Get Premium</button>`}
         </div>
       </div>
     </div>
-    <div class="form-group"><label class="form-label">${t('bio')}</label><textarea id="setBio" style="min-height:80px">${esc(uBio)}</textarea></div>
-    <div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;margin-top:4px">Social Links</div>
-    <div class="form-group"><label class="form-label">${t('social_discord')}</label><input type="text" id="setDiscord" value="${esc(u.discord||'')}" placeholder="username or user ID"></div>
-    <div class="form-group"><label class="form-label">${t('social_twitter')}</label><input type="text" id="setTwitter" value="${esc(u.twitter||'')}" placeholder="@handle"></div>
-    <div class="form-group"><label class="form-label">${t('social_instagram')}</label><input type="text" id="setInstagram" value="${esc(u.instagram||'')}" placeholder="@handle"></div>
-    <div class="form-group"><label class="form-label">${t('social_github')}</label><input type="text" id="setGithub" value="${esc(u.github||'')}" placeholder="@username"></div>
-    <div class="form-group"><label class="form-label">${t('social_website')}</label><input type="text" id="setWebsite" value="${esc(u.website||'')}" placeholder="https://..."></div>
-    <div class="grid2">
-      <div class="form-group"><label class="form-label">${t('username_color')} ${uPremium?'':'<span style="color:#555;font-weight:400">(Premium)</span>'}</label><input type="color" id="setColor" value="${uColor}" ${uPremium?'':'disabled style="opacity:.4"'}></div>
-    </div>
+    <div class="form-group"><label class="form-label">${t('bio')}</label><textarea id="setBio" style="min-height:80px">${esc(u.bio || '')}</textarea></div>
+    <div class="form-group"><label class="form-label">Discord</label><input type="text" id="setDiscord" value="${esc(u.discord || '')}"></div>
+    <div class="form-group"><label class="form-label">Twitter / X</label><input type="text" id="setTwitter" value="${esc(u.twitter || '')}"></div>
+    <div class="form-group"><label class="form-label">Instagram</label><input type="text" id="setInstagram" value="${esc(u.instagram || '')}"></div>
+    <div class="form-group"><label class="form-label">GitHub</label><input type="text" id="setGithub" value="${esc(u.github || '')}"></div>
+    <div class="form-group"><label class="form-label">Website</label><input type="text" id="setWebsite" value="${esc(u.website || '')}"></div>
+    <div class="grid2"><div class="form-group"><label class="form-label">${t('username_color')} ${u.premium ? '' : '<span style="color:#555;font-weight:400">(Premium)</span>'}</label><input type="color" id="setColor" value="${u.color || '#2A9FD6'}" ${u.premium ? '' : 'disabled style="opacity:.4"'}></div></div>
     <div id="settingsMsg" class="success-msg" style="display:none"></div>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn" onclick="navigate('home')">${t('cancel')}</button>
       <button class="btn btn-primary" onclick="saveSettings()">${t('save')}</button>
-      ${!uPremium?`<button class="btn btn-gold" onclick="navigate('shop')">${t('get_premium')} &#9733;</button>`:''}
+      ${!u.premium ? `<button class="btn btn-gold" onclick="navigate('shop')">Get Premium</button>` : ''}
     </div>
   </div></div>`;
 }
 
-// ── ADMIN ──────────────────────────────────────────────────────────────────────
-function buildAdmin(){
-  if(S.user?.role!=='admin')return'<div class="container" style="padding:40px;color:#555;font-family:monospace">Access denied.</div>';
-  return`<div class="admin-layout">
+// ── SHOP ─────────────────────────────────────────────────────────────────────
+const SHOP_ITEMS = [
+  {id:'vip',label:'VIP',lc:'#cc66ff',price:30,features:[['Color','Light Purple'],['GIF avatar',true],['Particle effects','Stars / Snow']]},
+  {id:'criminal',label:'Criminal',lc:'#9944cc',price:50,features:[['Color','Dark Purple'],['Private pastes',true],['Particle effects','Stars / Fire / Snow']]},
+  {id:'rich',label:'Rich',lc:'#ffd700',price:100,features:[['Color','Gold'],['All features',true],['Particle effects','All']]},
+  {id:'color',label:'Color',lc:'#fff',price:10,features:[['Custom username color',true]]},
+];
+function buildShop() {
+  const cards = SHOP_ITEMS.map(item => {
+    const fr = item.features.map(([l,v]) => `<div class="shop-feat"><span>${esc(l)}</span>${v===true?'<span class="feat-yes">&#10003;</span>':v===false?'<span class="feat-no">&#10007;</span>':`<span class="feat-val">${esc(String(v))}</span>`}</div>`).join('');
+    const btnClass = item.id==='rich'?'btn-gold':item.id==='criminal'?'btn-purple':'btn-primary';
+    return `<div class="shop-card"><div class="shop-card-title" style="color:${item.lc}">${esc(item.label)}</div><div class="shop-card-price">$${item.price}</div>${fr}<div style="margin-top:auto;padding-top:16px"><button class="btn ${btnClass}" style="width:100%" onclick="openShopModal('${item.id}','${item.label}',${item.price})">Purchase</button></div></div>`;
+  }).join('');
+  return `<div class="container" style="max-width:1100px"><h2 style="font-size:13px;font-weight:700;margin-top:24px;color:#fff;letter-spacing:1px;text-transform:uppercase">Upgrades</h2><p style="color:#555;font-size:12px;margin-top:6px;margin-bottom:0;font-family:monospace">Purchases processed via PayPal.</p><div class="shop-grid">${cards}</div></div>`;
+}
+function buildShopModal() {
+  const { label, price } = S.shopModal;
+  const pe = getSettings().paypal_email || 'yourpaypal@email.com';
+  return `<div class="modal-overlay" onclick="closeShopModal(event)"><div class="modal">
+    <span class="modal-close" onclick="S.shopModal=null;render()">&#215;</span>
+    <h3>Purchase: ${esc(label)}</h3>
+    <p style="color:#888;font-size:13px;margin-bottom:16px">Price: <strong style="color:#fff">$${price}</strong></p>
+    <ol style="color:#888;font-size:13px;padding-left:20px;line-height:2.2">
+      <li>Send <strong style="color:#fff">$${price}</strong> via PayPal to <strong style="color:var(--blue)">${esc(pe)}</strong></li>
+      <li>Include your username in the note</li>
+      <li>Send transaction ID to admin</li>
+    </ol>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <a href="https://www.paypal.com/paypalme/${encodeURIComponent(pe.split('@')[0])}/${price}" target="_blank" class="btn btn-primary" style="flex:1;text-align:center;display:block;padding:8px">Open PayPal</a>
+      <button class="btn" onclick="S.shopModal=null;render()">Cancel</button>
+    </div>
+  </div></div>`;
+}
+function openShopModal(id, label, price) { if (!S.user) { navigate('auth'); return; } S.shopModal = { id, label, price }; render(); }
+function closeShopModal(e) { if (e.target.className === 'modal-overlay') { S.shopModal = null; render(); } }
+
+// ── ADMIN ─────────────────────────────────────────────────────────────────────
+function buildAdmin() {
+  if (S.profile?.role !== 'admin') return '<div class="container" style="padding:40px;color:#555;font-family:monospace">Access denied.</div>';
+  return `<div class="admin-layout">
     <div class="admin-sidebar">
       <div class="sidebar-title">Admin Panel</div>
       <a class="${S.adminTab==='dashboard'?'active':''}" onclick="switchAdminTab('dashboard')">Dashboard</a>
       <a class="${S.adminTab==='users'?'active':''}" onclick="switchAdminTab('users')">Users</a>
       <a class="${S.adminTab==='pastes'?'active':''}" onclick="switchAdminTab('pastes')">Pastes</a>
-      <a class="${S.adminTab==='transactions'?'active':''}" onclick="switchAdminTab('transactions')">Transactions</a>
       <a class="${S.adminTab==='settings'?'active':''}" onclick="switchAdminTab('settings')">Settings</a>
-      <a onclick="exportDB()" style="margin-top:20px;color:#555">Export DB</a>
     </div>
     <div class="admin-content">
       ${S.adminTab==='dashboard'?buildAdminDash():''}
       ${S.adminTab==='users'?buildAdminUsers():''}
       ${S.adminTab==='pastes'?buildAdminPastes():''}
-      ${S.adminTab==='transactions'?buildAdminTx():''}
       ${S.adminTab==='settings'?buildAdminSettings():''}
     </div>
   </div>`;
 }
-function buildAdminDash(){
-  const st=S.adminStats;
-  return`<h2>Dashboard</h2>
-  <div class="stat-grid">
+function buildAdminDash() {
+  const st = S.adminStats;
+  return `<h2>Dashboard</h2><div class="stat-grid">
     <div class="stat-card"><div class="stat-label">Users</div><div class="stat-value">${st.users||0}</div></div>
     <div class="stat-card"><div class="stat-label">Pastes</div><div class="stat-value">${st.pastes||0}</div></div>
-    <div class="stat-card"><div class="stat-label">Total Views</div><div class="stat-value">${st.views||0}</div></div>
-    <div class="stat-card"><div class="stat-label">Comments</div><div class="stat-value">${st.comments||0}</div></div>
-  </div><div class="stat-grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="stat-card"><div class="stat-label">Views</div><div class="stat-value">${st.views||0}</div></div>
     <div class="stat-card"><div class="stat-label">Banned</div><div class="stat-value" style="color:#ff5555">${st.banned||0}</div></div>
   </div>`;
 }
-function buildAdminUsers(){
-  const rows=S.adminUsers.map(u=>{
-    const rl=rankLabel(u.rank);
-    const sid=esc(u.id);
-    return`<tr>
-      <td style="color:${u.color||'#ccc'};font-weight:700;cursor:pointer" onclick="viewUserProfile('${esc(u.username)}')">${esc(u.username)} ${rl?`<span style="font-size:11px;opacity:.7">${rl}</span>`:''}</td>
-      <td><span class="tag tag-${u.role||'user'}">${u.role||'user'}</span>${u.banned?'<span style="color:#ff8844;font-size:11px;margin-left:4px">banned</span>':''}</td>
-      <td style="font-family:monospace;font-size:12px;color:var(--text3)">${timeAgo(u.created_at)}</td>
-      <td>${u.likes_received||0}</td>
-      <td style="white-space:nowrap">
-        <button class="btn btn-sm" onclick="openEditUser('${sid}')">Edit</button>
-        <button class="btn btn-sm btn-gold" onclick="openGrantRank('${sid}')">Rang</button>
-        ${u.id!==S.user?.id?`<button class="btn btn-sm btn-red" onclick="deleteUser('${sid}','${esc(u.username)}')">Suppr</button>`:''}
-      </td>
-    </tr>`;
-  }).join('');
-  return`<h2>Users</h2>
-  <div style="margin-bottom:12px"><input type="text" id="adminUserSearch" placeholder="Rechercher..." style="width:240px;height:32px" oninput="run(async()=>{S.adminUsers=await apiAdminUsers(this.value);render();})"></div>
-  <table><thead><tr><th>Username</th><th>Role</th><th>Inscrit</th><th>Likes</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="5" style="text-align:center;color:#555;padding:20px;font-family:monospace">Aucun utilisateur</td></tr>'}</tbody></table>`;
-}
-function buildAdminPastes(){
-  const rows=S.adminPastes.map(p=>{
-    const sid=esc(p.id);
-    return`<tr>
-      <td style="cursor:pointer" onclick="viewPaste('${esc(p.link)}')">${esc(p.title)}</td>
-      <td style="color:#888">${p.username||'anon'}</td><td>${p.views}</td><td>${timeAgo(p.created_at)}</td>
-      <td style="white-space:nowrap"><button class="btn btn-sm" onclick="togglePin('${sid}')">${p.pinned?'Désépingler':'Épingler'}</button><button class="btn btn-sm btn-red" onclick="deletePaste('${sid}')">Suppr</button></td>
-    </tr>`;
-  }).join('');
-  return`<h2>Pastes</h2>
-  <div style="margin-bottom:12px"><input type="text" placeholder="Rechercher..." style="width:240px;height:32px" oninput="run(async()=>{S.adminPastes=await apiAdminPastes(this.value);render();})"></div>
-  <table><thead><tr><th>Titre</th><th>Auteur</th><th>Vues</th><th>Date</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="5" style="text-align:center;color:#555;padding:20px;font-family:monospace">Aucun paste</td></tr>'}</tbody></table>`;
-}
-function buildAdminTx(){
-  const txs=apiAdminTransactions();
-  // FIX 12: 'tx' instead of 't' — using 't' as loop variable shadows the t() translation function
-  const rows=txs.map(tx=>`<tr>
-    <td style="font-family:monospace;font-size:12px">${tx.id}</td>
-    <td style="cursor:pointer;color:var(--blue)" onclick="viewUserProfile('${esc(tx.username)}')">${esc(tx.username)}</td>
-    <td>${esc(tx.product)}</td>
-    <td><span style="color:${tx.status==='granted'?'#55ff55':'#ffd700'}">${tx.status}</span></td>
-    <td>${timeAgo(tx.created_at)}</td>
+function buildAdminUsers() {
+  const rows = S.adminUsers.map(u => `<tr>
+    <td style="color:${u.color||'#ccc'};font-weight:700;cursor:pointer" onclick="viewUserProfile('${esc(u.username)}')">${esc(u.username)} ${u.badge?`<span style="font-size:11px;opacity:.7">${esc(u.badge)}</span>`:''}</td>
+    <td style="color:var(--text2)">${u.role||'user'}${u.banned?'<span style="color:#ff8844;font-size:11px;margin-left:4px">banned</span>':''}</td>
+    <td style="font-family:monospace;font-size:12px;color:var(--text3)">${timeAgo(u.created_at)}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm" onclick="openEditUser('${u.id}')">Edit</button>
+      <button class="btn btn-sm btn-gold" onclick="openGrantRank('${u.id}')">Rank</button>
+      ${u.id !== S.user?.id ? `<button class="btn btn-sm btn-red" onclick="deleteUser('${u.id}','${esc(u.username)}')">Del</button>` : ''}
+    </td>
   </tr>`).join('');
-  return`<h2>Transactions</h2>
-  <p style="color:#555;font-size:12px;margin-bottom:12px;font-family:monospace">All manual rank grants are logged here.</p>
-  <table><thead><tr><th>ID</th><th>User</th><th>Product</th><th>Status</th><th>Date</th></tr></thead><tbody>${rows||'<tr><td colspan="5" style="text-align:center;color:#555;padding:20px;font-family:monospace">No transactions yet</td></tr>'}</tbody></table>`;
+  return `<h2>Users</h2><div style="margin-bottom:12px"><input type="text" placeholder="Search..." style="width:240px;height:32px" oninput="run(async()=>{S.adminUsers=await apiAdminUsers(this.value);render();})"></div>
+  <table><thead><tr><th>Username</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="4" style="text-align:center;color:#555;padding:20px;font-family:monospace">No users</td></tr>'}</tbody></table>`;
 }
-function buildAdminSettings(){
-  const s=getSettings();
-  return`<h2>Settings</h2><div style="max-width:480px">
+function buildAdminPastes() {
+  const rows = S.adminPastes.map(p => `<tr>
+    <td style="cursor:pointer" onclick="viewPaste('${esc(p.link)}')">${esc(p.title)}</td>
+    <td style="color:#888">${p.username||'anon'}</td><td>${p.views}</td><td>${timeAgo(p.created_at)}</td>
+    <td style="white-space:nowrap"><button class="btn btn-sm" onclick="togglePin('${p.id}')">${p.pinned?'Unpin':'Pin'}</button><button class="btn btn-sm btn-red" onclick="deletePaste('${p.id}')">Del</button></td>
+  </tr>`).join('');
+  return `<h2>Pastes</h2><div style="margin-bottom:12px"><input type="text" placeholder="Search..." style="width:240px;height:32px" oninput="run(async()=>{S.adminPastes=await apiAdminPastes(this.value);render();})"></div>
+  <table><thead><tr><th>Title</th><th>Author</th><th>Views</th><th>Date</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="5" style="text-align:center;color:#555;padding:20px;font-family:monospace">No pastes</td></tr>'}</tbody></table>`;
+}
+function buildAdminSettings() {
+  const s = getSettings();
+  return `<h2>Settings</h2><div style="max-width:480px">
     <div class="form-group"><label class="form-label">Site Name</label><input type="text" id="sSiteName" value="${esc(s.site_name||'FRDoxBin')}"></div>
     <div class="form-group"><label class="form-label">PayPal Email</label><input type="text" id="sPaypal" value="${esc(s.paypal_email||'')}"></div>
     <div class="form-group"><label class="form-label">Online Count Base</label><input type="text" id="sOnline" value="${esc(String(s.online_count_base||340))}"></div>
-    <button class="btn btn-primary" onclick="saveAdminSettings()">Save Settings</button>
+    <button class="btn btn-primary" onclick="saveAdminSettings()">Save</button>
   </div>`;
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
-function buildModal(){
-  const u=S.modal;
-  if(u.type==='grantRank'){
-    return`<div class="modal-overlay" onclick="closeModal(event)"><div class="modal">
+function buildModal() {
+  const u = S.modal;
+  if (u.type === 'grantRank') {
+    return `<div class="modal-overlay" onclick="closeModal(event)"><div class="modal">
       <span class="modal-close" onclick="S.modal=null;render()">&#215;</span>
       <h3>Grant Rank: ${esc(u.username)}</h3>
-      <div class="form-group"><label class="form-label">${t('rank')}</label><select id="grantRankSelect">
-        <option value="user">User (reset)</option>
-        <option value="vip">VIP ($30)</option>
-        <option value="criminal">Criminal ($50)</option>
-        <option value="rich">Rich ($100)</option>
-        <option value="council">Council</option>
-        <option value="mod">Moderator</option>
-        <option value="manager">Manager</option>
-        <option value="admin">Admin</option>
+      <div class="form-group"><label class="form-label">Rank</label><select id="grantRankSelect">
+        <option value="user">User (reset)</option><option value="vip">VIP ($30)</option>
+        <option value="criminal">Criminal ($50)</option><option value="rich">Rich ($100)</option>
+        <option value="council">Council</option><option value="mod">Mod</option>
+        <option value="manager">Manager</option><option value="admin">Admin</option>
       </select></div>
-      <div class="form-group"><label class="form-label">Product / Note</label><input type="text" id="grantProduct" placeholder="e.g. VIP purchase PayPal #123"></div>
-      <!-- FIX: doGrantRank needs quoted string ID -->
-      <div class="modal-footer"><button class="btn" onclick="S.modal=null;render()">Cancel</button><button class="btn btn-gold" onclick="doGrantRank('${u.id}')">Grant Rank</button></div>
+      <div class="modal-footer"><button class="btn" onclick="S.modal=null;render()">Cancel</button><button class="btn btn-gold" onclick="doGrantRank('${u.id}')">Grant</button></div>
     </div></div>`;
   }
-  return`<div class="modal-overlay" onclick="closeModal(event)"><div class="modal">
+  return `<div class="modal-overlay" onclick="closeModal(event)"><div class="modal">
     <span class="modal-close" onclick="S.modal=null;render()">&#215;</span>
     <h3>Edit User: ${esc(u.username)}</h3>
     <div class="form-group"><label class="form-label">Role</label><select id="editRole"><option value="user" ${u.role==='user'?'selected':''}>user</option><option value="admin" ${u.role==='admin'?'selected':''}>admin</option></select></div>
@@ -1341,8 +953,8 @@ function buildModal(){
       <div class="form-group"><label class="form-label">Username Color</label><input type="color" id="editColor" value="${u.color||'#2A9FD6'}"></div>
       <div class="form-group"><label class="form-label">Row Highlight</label><input type="color" id="editRowColor" value="${u.row_color||'#0d0d0d'}"></div>
     </div>
-    <div class="form-group"><label class="form-label">Badge (e.g. [VIP])</label><input type="text" id="editBadge" value="${esc(u.badge||'')}"></div>
-    <div class="form-group"><label class="form-label">Particle Effect</label><select id="editParticle">
+    <div class="form-group"><label class="form-label">Badge</label><input type="text" id="editBadge" value="${esc(u.badge||'')}"></div>
+    <div class="form-group"><label class="form-label">Particle</label><select id="editParticle">
       <option value="none" ${u.particle==='none'?'selected':''}>None</option>
       <option value="stars" ${u.particle==='stars'?'selected':''}>Stars</option>
       <option value="fire" ${u.particle==='fire'?'selected':''}>Fire</option>
@@ -1351,269 +963,196 @@ function buildModal(){
     </select></div>
     <div class="form-group"><label class="form-label">Premium</label><select id="editPremium"><option value="0" ${!u.premium?'selected':''}>No</option><option value="1" ${u.premium?'selected':''}>Yes</option></select></div>
     <div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="editBanned" ${u.banned?'checked':''} style="width:auto"><label class="form-label" style="margin:0">Banned</label></div>
-    <!-- FIX: saveUser needs quoted string ID -->
     <div class="modal-footer"><button class="btn" onclick="S.modal=null;render()">Cancel</button><button class="btn btn-primary" onclick="saveUser('${u.id}')">Save</button></div>
   </div></div>`;
 }
 
 // ─── PARTICLES ────────────────────────────────────────────────────────────────
 const PCONF = {
-  stars:  { colors:['#ffffff','#ccddff','#aabbff'], size:[1,2], count:55, vx:[-0.3,0.3], vy:[-0.3,0.3], fade:true,  mode:'drift'  },
-  fire:   { colors:['#ff4400','#ff6600','#ff9900','#ffcc00'], size:[1,2], count:50, vx:[-0.4,0.4], vy:[-2,-0.5], fade:true,  mode:'rise'   },
-  snow:   { colors:['#cce8ff','#ffffff','#aad4ff'], size:[1,2], count:45, vx:[-0.3,0.3], vy:[0.3,0.9], fade:false, mode:'fall'   },
-  matrix: { colors:['#00ff41','#00cc33','#007722'], size:[1,1], count:40, vx:[0,0],       vy:[0.8,2],   fade:false, mode:'matrix' },
+  stars:  { colors:['#ffffff','#ccddff','#aabbff'], size:[1,2], count:55, vx:[-0.3,0.3], vy:[-0.3,0.3], mode:'drift' },
+  fire:   { colors:['#ff4400','#ff6600','#ff9900','#ffcc00'], size:[1,2], count:50, vx:[-0.4,0.4], vy:[-2,-0.5], mode:'rise' },
+  snow:   { colors:['#cce8ff','#ffffff','#aad4ff'], size:[1,2], count:45, vx:[-0.3,0.3], vy:[0.3,0.9], mode:'fall' },
+  matrix: { colors:['#00ff41','#00cc33','#007722'], size:[1,1], count:40, vx:[0,0], vy:[0.8,2], mode:'matrix' },
 };
-let particleAnim=null, namePixelAnims=[];
-function stopAllParticles(){
-  if(particleAnim){cancelAnimationFrame(particleAnim);particleAnim=null;}
-  namePixelAnims.forEach(a=>cancelAnimationFrame(a));
-  namePixelAnims=[];
-}
-function spawnParticles(type){
+let particleAnim = null, namePixelAnims = [];
+function stopAllParticles() { if (particleAnim) { cancelAnimationFrame(particleAnim); particleAnim = null; } namePixelAnims.forEach(a => cancelAnimationFrame(a)); namePixelAnims = []; }
+function spawnParticles(type) {
   stopAllParticles();
-  const canvas=document.getElementById('profile-canvas');
-  if(!canvas||!type||type==='none')return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=canvas.offsetWidth||800; canvas.height=canvas.offsetHeight||600;
-  const cfg=PCONF[type]||PCONF.stars;
-  const ps=[];
-  for(let i=0;i<cfg.count;i++) ps.push(mkDot(cfg, canvas.width, canvas.height, type));
-  function mkDot(cfg,w,h,type){
-    const isMatrix=type==='matrix';
-    return{
-      x: isMatrix ? Math.floor(Math.random()*(w/8))*8 : Math.random()*w,
-      y: type==='fire' ? h+4 : Math.random()*h,
-      vx: cfg.vx[0]+(Math.random()*(cfg.vx[1]-cfg.vx[0])),
-      vy: cfg.vy[0]+(Math.random()*(cfg.vy[1]-cfg.vy[0])),
-      color: cfg.colors[Math.floor(Math.random()*cfg.colors.length)],
-      size: cfg.size[0]+Math.floor(Math.random()*(cfg.size[1]-cfg.size[0]+1)),
-      alpha: Math.random()*.8+.2,
-      life: 1, decay: Math.random()*.015+.005,
-      char: isMatrix ? String.fromCharCode(0x30A0+Math.floor(Math.random()*96)) : null,
-    };
+  const canvas = document.getElementById('profile-canvas');
+  if (!canvas || !type || type === 'none') return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || 800; canvas.height = canvas.offsetHeight || 600;
+  const cfg = PCONF[type] || PCONF.stars;
+  const ps = [];
+  for (let i = 0; i < cfg.count; i++) ps.push(mkDot(cfg, canvas.width, canvas.height, type));
+  function mkDot(cfg, w, h, type) {
+    const isMat = type === 'matrix';
+    return { x: isMat ? Math.floor(Math.random()*(w/8))*8 : Math.random()*w, y: type==='fire'?h+4:Math.random()*h, vx:cfg.vx[0]+(Math.random()*(cfg.vx[1]-cfg.vx[0])), vy:cfg.vy[0]+(Math.random()*(cfg.vy[1]-cfg.vy[0])), color:cfg.colors[Math.floor(Math.random()*cfg.colors.length)], size:cfg.size[0]+Math.floor(Math.random()*(cfg.size[1]-cfg.size[0]+1)), alpha:Math.random()*.8+.2, life:1, decay:Math.random()*.015+.005, char:isMat?String.fromCharCode(0x30A0+Math.floor(Math.random()*96)):null };
   }
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(let i=0;i<ps.length;i++){
-      const p=ps[i];
-      ctx.globalAlpha=Math.max(0,Math.min(1, type==='fire'?p.life*.8:p.alpha));
-      if(p.char){
-        ctx.fillStyle=p.color; ctx.font='9px monospace'; ctx.fillText(p.char,p.x,p.y);
-      } else {
-        ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,p.size,p.size);
-      }
-      p.x+=p.vx; p.y+=p.vy;
-      if(type==='fire'){p.life-=p.decay; if(p.life<=0)ps[i]=mkDot(cfg,canvas.width,canvas.height,type);}
-      else if(type==='stars'){p.alpha+=(Math.random()-.5)*.04; p.alpha=Math.max(.1,Math.min(1,p.alpha)); if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0; if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;}
-      else if(type==='snow'){if(p.y>canvas.height){p.y=-2;p.x=Math.random()*canvas.width;}}
-      else if(type==='matrix'){if(p.char&&Math.random()<.04)p.char=String.fromCharCode(0x30A0+Math.floor(Math.random()*96)); if(p.y>canvas.height){p.y=0;p.x=Math.floor(Math.random()*(canvas.width/8))*8;}}
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < ps.length; i++) {
+      const p = ps[i];
+      ctx.globalAlpha = Math.max(0, Math.min(1, type==='fire'?p.life*.8:p.alpha));
+      if (p.char) { ctx.fillStyle = p.color; ctx.font = '9px monospace'; ctx.fillText(p.char, p.x, p.y); }
+      else { ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size); }
+      p.x += p.vx; p.y += p.vy;
+      if (type==='fire') { p.life-=p.decay; if(p.life<=0) ps[i]=mkDot(cfg,canvas.width,canvas.height,type); }
+      else if (type==='stars') { p.alpha+=(Math.random()-.5)*.04; p.alpha=Math.max(.1,Math.min(1,p.alpha)); if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0; if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0; }
+      else if (type==='snow') { if(p.y>canvas.height){p.y=-2;p.x=Math.random()*canvas.width;} }
+      else if (type==='matrix') { if(p.char&&Math.random()<.04)p.char=String.fromCharCode(0x30A0+Math.floor(Math.random()*96)); if(p.y>canvas.height){p.y=0;p.x=Math.floor(Math.random()*(canvas.width/8))*8;} }
     }
-    ctx.globalAlpha=1;
-    particleAnim=requestAnimationFrame(draw);
+    ctx.globalAlpha = 1;
+    particleAnim = requestAnimationFrame(draw);
   }
   draw();
 }
-function spawnNameParticles(el, type){
-  if(!el||!type||type==='none')return;
-  if(el._pixelCanvas)el._pixelCanvas.remove();
-  const cfg=PCONF[type];
-  if(!cfg)return;
-  const c=document.createElement('canvas');
-  c.style.cssText='position:absolute;top:-8px;left:-4px;pointer-events:none;z-index:10;';
-  el.style.position='relative';
-  el.appendChild(c); el._pixelCanvas=c;
-  const W=el.offsetWidth+12, H=el.offsetHeight+18;
-  c.width=W; c.height=H;
-  const ctx=c.getContext('2d');
-  const COUNT=Math.min(16, Math.ceil(W/8));
-  const ps=[];
-  for(let i=0;i<COUNT;i++){
-    ps.push({
-      x:Math.random()*W, y:H-2,
-      vx:(Math.random()-.5)*.6,
-      vy:type==='snow'?(Math.random()*.5+.2):-(Math.random()*1.2+.3),
-      color:cfg.colors[Math.floor(Math.random()*cfg.colors.length)],
-      size:1, alpha:Math.random()*.9+.1,
-      life:Math.random(), decay:Math.random()*.025+.008,
-    });
-  }
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    for(const p of ps){
-      ctx.globalAlpha=Math.max(0,p.alpha);
-      ctx.fillStyle=p.color;
-      ctx.fillRect(Math.round(p.x),Math.round(p.y),1,1);
-      p.x+=p.vx; p.y+=p.vy;
-      p.life-=p.decay;
-      if(p.life<=0){
-        p.x=Math.random()*W; p.y=type==='snow'?-1:H-2;
-        p.life=Math.random()*.8+.2;
-        p.vx=(Math.random()-.5)*.6;
-        p.vy=type==='snow'?(Math.random()*.5+.2):-(Math.random()*1.2+.3);
-        p.color=cfg.colors[Math.floor(Math.random()*cfg.colors.length)];
-      }
+function spawnNameParticles(el, type) {
+  if (!el || !type || type === 'none') return;
+  if (el._pixelCanvas) el._pixelCanvas.remove();
+  const cfg = PCONF[type]; if (!cfg) return;
+  const c = document.createElement('canvas');
+  c.style.cssText = 'position:absolute;top:-8px;left:-4px;pointer-events:none;z-index:10;';
+  el.style.position = 'relative'; el.appendChild(c); el._pixelCanvas = c;
+  const W = el.offsetWidth + 12, H = el.offsetHeight + 18;
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+  const COUNT = Math.min(16, Math.ceil(W / 8));
+  const ps = [];
+  for (let i = 0; i < COUNT; i++) ps.push({ x:Math.random()*W, y:H-2, vx:(Math.random()-.5)*.6, vy:type==='snow'?(Math.random()*.5+.2):-(Math.random()*1.2+.3), color:cfg.colors[Math.floor(Math.random()*cfg.colors.length)], size:1, alpha:Math.random()*.9+.1, life:Math.random(), decay:Math.random()*.025+.008 });
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of ps) {
+      ctx.globalAlpha = Math.max(0, p.alpha); ctx.fillStyle = p.color; ctx.fillRect(Math.round(p.x), Math.round(p.y), 1, 1);
+      p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+      if (p.life <= 0) { p.x=Math.random()*W; p.y=type==='snow'?-1:H-2; p.life=Math.random()*.8+.2; p.vx=(Math.random()-.5)*.6; p.vy=type==='snow'?(Math.random()*.5+.2):-(Math.random()*1.2+.3); p.color=cfg.colors[Math.floor(Math.random()*cfg.colors.length)]; }
     }
-    ctx.globalAlpha=1;
-    const id=requestAnimationFrame(draw); el._pixelRaf=id; namePixelAnims.push(id);
+    ctx.globalAlpha = 1;
+    const id = requestAnimationFrame(draw); el._pixelRaf = id; namePixelAnims.push(id);
   }
   draw();
 }
-function attachNameParticles(){
-  document.querySelectorAll('[data-particle]').forEach(el=>{
-    const type=el.getAttribute('data-particle');
-    spawnNameParticles(el, type);
-  });
-}
+function attachNameParticles() { document.querySelectorAll('[data-particle]').forEach(el => { const type = el.getAttribute('data-particle'); spawnNameParticles(el, type); }); }
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
-function attachEvents(){
-  const sb=document.getElementById('searchBox'); if(sb)sb.addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
-  const lp=document.getElementById('loginPass'); if(lp)lp.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-  const rp=document.getElementById('regPass'); if(rp)rp.addEventListener('keydown',e=>{if(e.key==='Enter')doRegister();});
-  const pc=document.getElementById('profileCommentText'); if(pc)pc.addEventListener('keydown',e=>{if(e.key==='Enter'&&S.viewUser)submitProfileComment(S.viewUser.id);});
+function attachEvents() {
+  const sb2 = document.getElementById('searchBox'); if (sb2) sb2.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+  const lp = document.getElementById('loginPass'); if (lp) lp.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  const rp = document.getElementById('regPass'); if (rp) rp.addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
 }
-function loadPastes(){run(async()=>{const r=await apiGetPastes(S.currentPage,S.search);S.pastes=r.pastes;S.total=r.total;S.pages=r.pages;render();});}
-function doSearch(){S.search=document.getElementById('searchBox').value;S.currentPage=1;loadPastes();}
-function changePage(p){S.currentPage=p;loadPastes();}
-function viewPaste(link){run(async()=>{const paste=await apiGetPaste(link);S.viewPaste=paste;navigate('view');});}
-function viewUserProfile(username){run(async()=>{const user=await apiGetUser(username);S.viewUser=user;S.profileTab='pastes';navigate('profile');});}
-function submitPaste(){
-  run(async()=>{
-    const title=document.getElementById('pasteTitle').value.trim();
-    const content=document.getElementById('pasteContent').value.trim();
-    const visibility=document.getElementById('pasteVisibility').value;
-    const r=await apiCreatePaste(title,content,visibility);
-    if(r.success){toast('Paste publié!');const paste=await apiGetPaste(r.link);S.viewPaste=paste;navigate('view');}
-    else{const e=document.getElementById('uploadError');if(e){e.textContent=r.error;e.style.display='block';}}
+function loadPastes() { run(async () => { const r = await apiGetPastes(S.currentPage, S.search); S.pastes = r.pastes; S.total = r.total; S.pages = r.pages; render(); }); }
+function doSearch() { S.search = document.getElementById('searchBox').value; S.currentPage = 1; loadPastes(); }
+function changePage(p) { S.currentPage = p; loadPastes(); }
+function viewPaste(link) { run(async () => { const paste = await apiGetPaste(link); S.viewPaste = paste; navigate('view'); }); }
+function viewUserProfile(username) { run(async () => { const user = await apiGetUser(username); S.viewUser = user; navigate('profile'); }); }
+function submitPaste() {
+  run(async () => {
+    const title = document.getElementById('pasteTitle').value.trim();
+    const content = document.getElementById('pasteContent').value.trim();
+    const visibility = document.getElementById('pasteVisibility').value;
+    const r = await apiCreatePaste(title, content, visibility);
+    if (r.success) { toast('Paste publié!'); const paste = await apiGetPaste(r.link); S.viewPaste = paste; navigate('view'); }
+    else { const e = document.getElementById('uploadError'); if (e) { e.textContent = r.error; e.style.display = 'block'; } }
   });
 }
-function submitComment(pasteId){
-  run(async()=>{
-    const content=document.getElementById('commentText')?.value;
-    const r=await apiAddComment(pasteId,content);
-    if(r.success){toast('Commentaire posté!');const paste=await apiGetPaste(S.viewPaste.link);S.viewPaste=paste;render();}
-    else toast(r.error,false);
+function submitComment(pasteId) {
+  run(async () => {
+    const content = document.getElementById('commentText')?.value;
+    const r = await apiAddComment(pasteId, content);
+    if (r.success) { toast('Commentaire posté!'); const paste = await apiGetPaste(S.viewPaste.link); S.viewPaste = paste; render(); }
+    else toast(r.error, false);
   });
 }
-function delComment(id){if(!confirm('Supprimer ce commentaire?'))return;run(async()=>{await apiDeleteComment(id);toast('Commentaire supprimé.');const paste=await apiGetPaste(S.viewPaste.link);S.viewPaste=paste;render();});}
-function submitProfileComment(targetId){
-  run(async()=>{
-    const v=document.getElementById('profileCommentText')?.value;
-    const r=apiAddProfileComment(targetId,v);
-    if(r.success){toast('Commentaire posté!');const u=await apiGetUser(S.viewUser.username);S.viewUser=u;render();}
-    else toast(r.error||'Erreur',false);
+function delComment(id) { if (!confirm('Supprimer?')) return; run(async () => { await apiDeleteComment(id); toast('Supprimé.'); const paste = await apiGetPaste(S.viewPaste.link); S.viewPaste = paste; render(); }); }
+function submitProfileComment(targetId) {
+  run(async () => {
+    const v = document.getElementById('profileCommentText')?.value;
+    const r = apiAddProfileComment(targetId, v);
+    if (r.success) { toast('Commentaire posté!'); const u = await apiGetUser(S.viewUser.username); S.viewUser = u; render(); }
+    else toast(r.error || 'Erreur', false);
   });
 }
-function delProfileComment(targetId,id){
-  if(!confirm('Supprimer?'))return;
-  apiDeleteProfileComment(targetId,id);toast('Supprimé.');run(async()=>{const u=await apiGetUser(S.viewUser.username);S.viewUser=u;render();});
-}
-function doLike(pasteId){if(!S.user){navigate('auth');return;}run(async()=>{await apiToggleLike(pasteId);const paste=await apiGetPaste(S.viewPaste.link);S.viewPaste=paste;render();});}
-function doFollow(targetId){if(!S.user){navigate('auth');return;}run(async()=>{const f=await apiFollow(targetId);toast(f?'Abonné!':'Désabonné.');const user=await apiGetUser(S.viewUser.username);S.viewUser=user;render();});}
-function doLogin(){
-  run(async()=>{
-    const identity=document.getElementById('loginUser').value.trim(),password=document.getElementById('loginPass').value;
-    if(!identity||!password){const e=document.getElementById('loginError');if(e){e.textContent='Remplissez tous les champs.';e.style.display='block';}return;}
-    const r=await apiLogin(identity,password);
-    if(r.success){S.user=r.user;toast('Bienvenue, '+r.user.username+'!');navigate('home');loadPastes();}
-    else{const e=document.getElementById('loginError');if(e){e.textContent=r.error;e.style.display='block';}}
+function delProfileComment(targetId, id) { if (!confirm('Supprimer?')) return; apiDeleteProfileComment(targetId, id); toast('Supprimé.'); run(async () => { const u = await apiGetUser(S.viewUser.username); S.viewUser = u; render(); }); }
+function doLike(pasteId) { if (!S.user) { navigate('auth'); return; } run(async () => { await apiToggleLike(pasteId); const paste = await apiGetPaste(S.viewPaste.link); S.viewPaste = paste; render(); }); }
+function doFollow(targetId) { if (!S.user) { navigate('auth'); return; } run(async () => { const f = await apiFollow(targetId); toast(f ? 'Abonné!' : 'Désabonné.'); const user = await apiGetUser(S.viewUser.username); S.viewUser = user; render(); }); }
+function doLogin() {
+  run(async () => {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value;
+    if (!email || !password) { const e = document.getElementById('loginError'); if (e) { e.textContent = 'Remplissez tous les champs.'; e.style.display = 'block'; } return; }
+    const r = await apiLogin(email, password);
+    if (r.success) { toast('Bienvenue, ' + (S.profile?.username || '') + '!'); navigate('home'); loadPastes(); }
+    else { const e = document.getElementById('loginError'); if (e) { e.textContent = r.error; e.style.display = 'block'; } }
   });
 }
-function doRegister(){
-  run(async()=>{
-    const username=document.getElementById('regUser').value;
-    const email=document.getElementById('regEmail').value;
-    const password=document.getElementById('regPass').value;
-    const r=await apiRegister(username,email,password);
-    if(r.success){S.user=r.user;toast('Compte créé!');navigate('home');loadPastes();}
-    else{const e=document.getElementById('regError');if(e){e.textContent=r.error;e.style.display='block';}}
+function doRegister() {
+  run(async () => {
+    const username = document.getElementById('regUser').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPass').value;
+    const r = await apiRegister(username, email, password);
+    if (r.success) { toast('Compte créé!'); navigate('home'); loadPastes(); }
+    else { const e = document.getElementById('regError'); if (e) { e.textContent = r.error; e.style.display = 'block'; } }
   });
 }
-function doLogout(){setSession(null);setToken(null);S.user=null;S_fullUser=null;navigate('home');toast('Déconnecté.');loadPastes();}
-function switchAuthTab(tab){
-  document.getElementById('tab-login').className='auth-tab'+(tab==='login'?' active':'');
-  document.getElementById('tab-register').className='auth-tab'+(tab==='register'?' active':'');
-  document.getElementById('auth-login').style.display=tab==='login'?'':'none';
-  document.getElementById('auth-register').style.display=tab==='register'?'':'none';
+function doLogout() { run(async () => { await apiLogout(); navigate('home'); toast('Déconnecté.'); loadPastes(); }); }
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').className = 'auth-tab' + (tab === 'login' ? ' active' : '');
+  document.getElementById('tab-register').className = 'auth-tab' + (tab === 'register' ? ' active' : '');
+  document.getElementById('auth-login').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'register' ? '' : 'none';
 }
-function goAdmin(){run(async()=>{S.adminStats=await apiAdminStats();S.adminUsers=await apiAdminUsers();S.adminPastes=await apiAdminPastes();S.adminTab='dashboard';navigate('admin');});}
-function switchAdminTab(tab){
-  S.adminTab=tab;
-  run(async()=>{
-    if(tab==='dashboard')S.adminStats=await apiAdminStats();
-    if(tab==='users')S.adminUsers=await apiAdminUsers();
-    if(tab==='pastes')S.adminPastes=await apiAdminPastes();
-    render();
-  });
+function goAdmin() { run(async () => { S.adminStats = await apiAdminStats(); S.adminUsers = await apiAdminUsers(); S.adminPastes = await apiAdminPastes(); S.adminTab = 'dashboard'; navigate('admin'); }); }
+function switchAdminTab(tab) { S.adminTab = tab; run(async () => { if (tab==='dashboard') S.adminStats=await apiAdminStats(); if (tab==='users') S.adminUsers=await apiAdminUsers(); if (tab==='pastes') S.adminPastes=await apiAdminPastes(); render(); }); }
+function openEditUser(id) { S.modal = S.adminUsers.find(u => u.id === id); render(); }
+function openGrantRank(id) { const u = S.adminUsers.find(u => u.id === id); if (u) { S.modal = { ...u, type: 'grantRank' }; render(); } }
+function closeModal(e) { if (e.target.className === 'modal-overlay') { S.modal = null; render(); } }
+function saveUser(id) {
+  const body = { role:document.getElementById('editRole').value, color:document.getElementById('editColor').value, badge:document.getElementById('editBadge').value, particle:document.getElementById('editParticle').value, premium:document.getElementById('editPremium').value==='1', banned:document.getElementById('editBanned').checked };
+  run(async () => { if (await apiUpdateUser(id, body)) { toast('Mis à jour!'); S.modal = null; S.adminUsers = await apiAdminUsers(); render(); } else toast('Erreur', false); });
 }
-function openEditUser(id){S.modal=S.adminUsers.find(u=>u.id===id);render();}
-function openGrantRank(id){const u=S.adminUsers.find(u=>u.id===id);if(u){S.modal={...u,type:'grantRank'};render();}}
-function closeModal(e){if(e.target.className==='modal-overlay'){S.modal=null;render();}}
-function saveUser(id){
-  const body={role:document.getElementById('editRole').value,color:document.getElementById('editColor').value,row_color:document.getElementById('editRowColor').value,badge:document.getElementById('editBadge').value,particle:document.getElementById('editParticle').value,premium:document.getElementById('editPremium').value==='1',banned:document.getElementById('editBanned').checked};
-  run(async()=>{if(await apiUpdateUser(id,body)){toast('Utilisateur mis à jour!');S.modal=null;S.adminUsers=await apiAdminUsers();render();}else toast('Erreur',false);});
+function doGrantRank(id) {
+  const rank = document.getElementById('grantRankSelect').value;
+  run(async () => { if (await apiGrantRank(id, rank)) { toast('Rang accordé!'); S.modal = null; S.adminUsers = await apiAdminUsers(); render(); } else toast('Erreur', false); });
 }
-function doGrantRank(id){
-  const rank=document.getElementById('grantRankSelect').value,product=document.getElementById('grantProduct').value||rank;
-  run(async()=>{if(await apiGrantRank(id,rank,product)){toast('Rang accordé!');S.modal=null;S.adminUsers=await apiAdminUsers();render();}else toast('Erreur',false);});
+function deleteUser(id, name) { if (!confirm(`Supprimer "${name}"?`)) return; run(async () => { await apiDeleteUser(id); toast('Supprimé.'); S.adminUsers = await apiAdminUsers(); render(); }); }
+function deletePaste(id) { if (!confirm('Supprimer ce paste?')) return; run(async () => { await apiDeletePaste(id); toast('Supprimé.'); S.adminPastes = await apiAdminPastes(); loadPastes(); render(); }); }
+function deleteCurrentPaste(id) { if (!confirm('Supprimer ce paste?')) return; run(async () => { await apiDeletePaste(id); toast('Supprimé.'); navigate('home'); loadPastes(); }); }
+function togglePin(id) { run(async () => { const p = await apiTogglePin(id); toast(p ? 'Épinglé.' : 'Désépinglé.'); S.adminPastes = await apiAdminPastes(); loadPastes(); render(); }); }
+function copyPaste() { if (S.viewPaste) navigator.clipboard.writeText(S.viewPaste.content).then(() => toast('Copié!')); }
+function saveBarColor() {
+  const v = document.getElementById('barColorPick')?.value;
+  if (!v) return;
+  run(async () => { if (await apiUpdateProfile({ bar_color: v })) { toast('Couleur mise à jour!'); const paste = await apiGetPaste(S.viewPaste.link); S.viewPaste = paste; render(); } });
 }
-function deleteUser(id,name){if(!confirm(`Supprimer "${name}" et tous ses pastes?`))return;run(async()=>{await apiDeleteUser(id);toast('Utilisateur supprimé.');S.adminUsers=await apiAdminUsers();render();});}
-function deletePaste(id){if(!confirm('Supprimer ce paste?'))return;run(async()=>{await apiDeletePaste(id);toast('Paste supprimé.');S.adminPastes=await apiAdminPastes();loadPastes();render();});}
-function deleteCurrentPaste(id){if(!confirm('Supprimer ce paste?'))return;run(async()=>{await apiDeletePaste(id);toast('Paste supprimé.');navigate('home');loadPastes();});}
-function togglePin(id){run(async()=>{const p=await apiTogglePin(id);toast(p?'Paste épinglé.':'Paste désépinglé.');S.adminPastes=await apiAdminPastes();loadPastes();render();});}
-function copyPaste(){if(S.viewPaste)navigator.clipboard.writeText(S.viewPaste.content).then(()=>toast('Copié!'));}
-function updateBarPreview(hex){
-  if(!hex||hex.length<7)return;
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  const prev=document.getElementById('barPreview');
-  if(prev)prev.style.background=`linear-gradient(90deg,transparent 0%,rgba(${r},${g},${b},.18) 25%,rgba(${r},${g},${b},.38) 50%,rgba(${r},${g},${b},.18) 75%,transparent 100%)`;
-}
-function saveBarColor(){
-  const v=document.getElementById('barColorPick')?.value;
-  if(!v)return;
-  run(async()=>{if(await apiUpdateProfile({bar_color:v})){toast('Couleur mise à jour!');const paste=await apiGetPaste(S.viewPaste.link);S.viewPaste=paste;render();}});
-}
-function handleAvatarUpload(e){
-  const file=e.target.files[0]; if(!file)return;
-  if(file.size>2*1024*1024){toast('Image trop grande (max 2 Mo)',false);return;}
-  const r=new FileReader();
-  r.onload=ev=>{
-    const data=ev.target.result;
-    S._pendingAvatar=data;
-    const prev=document.getElementById('avatarPreview');
-    if(prev)prev.innerHTML=`<img src="${data}" style="width:100%;height:100%;object-fit:cover" alt="">`;
-  };
+function handleAvatarUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('Image trop grande (max 2 Mo)', false); return; }
+  const r = new FileReader();
+  r.onload = ev => { S._pendingAvatar = ev.target.result; const prev = document.getElementById('avatarPreview'); if (prev) prev.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover" alt="">`; };
   r.readAsDataURL(file);
 }
-function clearAvatar(){
-  S._pendingAvatar='';
-  const prev=document.getElementById('avatarPreview');
-  const uname=S_fullUser?.username||S.user?.username||'?';
-  if(prev)prev.innerHTML=`<span style="font-size:24px;font-weight:700;color:#fff">${esc(uname[0].toUpperCase())}</span>`;
+function clearAvatar() { S._pendingAvatar = ''; const prev = document.getElementById('avatarPreview'); const uname = S.profile?.username || '?'; if (prev) prev.innerHTML = `<span style="font-size:24px;font-weight:700;color:#fff">${esc(uname[0].toUpperCase())}</span>`; }
+function saveSettings() {
+  const body = { bio:document.getElementById('setBio').value, discord:document.getElementById('setDiscord')?.value||'', twitter:document.getElementById('setTwitter')?.value||'', instagram:document.getElementById('setInstagram')?.value||'', github:document.getElementById('setGithub')?.value||'', website:document.getElementById('setWebsite')?.value||'', color:document.getElementById('setColor')?.value||'#2A9FD6' };
+  if (S._pendingAvatar !== undefined) body.avatar_url = S._pendingAvatar;
+  S._pendingAvatar = undefined;
+  run(async () => { if (await apiUpdateProfile(body)) { const m = document.getElementById('settingsMsg'); if (m) { m.textContent = 'Profil sauvegardé!'; m.style.display = 'block'; setTimeout(() => { m.style.display = 'none'; }, 2500); } toast('Profil mis à jour!'); } });
 }
-function saveSettings(){
-  const body={
-    bio:document.getElementById('setBio').value,
-    discord:document.getElementById('setDiscord')?.value||'',
-    twitter:document.getElementById('setTwitter')?.value||'',
-    instagram:document.getElementById('setInstagram')?.value||'',
-    github:document.getElementById('setGithub')?.value||'',
-    website:document.getElementById('setWebsite')?.value||'',
-    color:document.getElementById('setColor')?.value||'#2A9FD6'
-  };
-  if(S._pendingAvatar!==undefined)body.avatar_url=S._pendingAvatar;
-  S._pendingAvatar=undefined;
-  run(async()=>{if(await apiUpdateProfile(body)){const m=document.getElementById('settingsMsg');if(m){m.textContent='Profil sauvegardé!';m.style.display='block';setTimeout(()=>{m.style.display='none';},2500);}toast('Profil mis à jour!');}});
-}
-function saveAdminSettings(){
-  const body={site_name:document.getElementById('sSiteName').value,paypal_email:document.getElementById('sPaypal').value,online_count_base:parseInt(document.getElementById('sOnline').value)||340};
-  apiAdminSettings(body);toast('Paramètres sauvegardés!');
-}
+function saveAdminSettings() { apiAdminSettings({ site_name:document.getElementById('sSiteName').value, paypal_email:document.getElementById('sPaypal').value, online_count_base:parseInt(document.getElementById('sOnline').value)||340 }); toast('Sauvegardé!'); }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-render();
-if(S.user) loadFullUser();
-loadPastes();
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    S.user = session.user;
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+    S.profile = profile;
+  }
+  render();
+  loadPastes();
+}
+init();
 </script>
 </body>
 </html>
