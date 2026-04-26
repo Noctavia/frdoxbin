@@ -260,8 +260,8 @@ function t(k){ return LANG[CL]?.[k]||LANG.en[k]||k; }
 function setLang(l){ CL=l; localStorage.setItem('doxbin_lang',l); render(); }
 
 // ─── POCKETBASE CONFIG ────────────────────────────────────────────────────────
-const PB_URL = 'https://fallen-let.pockethost.io/';
-
+const PB_URL = 'https://vmwsnmhternjfkbitwie.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_FM5kxxdKsfp-dGGNelp6Zg_VXBoZ6-P';
 // ─── SESSION ──────────────────────────────────────────────────────────────────
 const SK = 'doxbin_session';
 function getSession() { try { const r=localStorage.getItem(SK); return r?JSON.parse(r):null; } catch(e){return null;} }
